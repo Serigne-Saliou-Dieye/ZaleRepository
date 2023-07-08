@@ -1,0 +1,20 @@
+ Pour exécuter cet algorithme en utilisant MPI, vous pouvez suivre les étapes suivantes :
+
+Installez MPI sur votre système (si ce n'est pas déjà fait).
+Enregistrez le code ci-dessus dans un fichier avec une extension ".c" (par exemple, "round_robin.c").
+Compilez le code en utilisant un compilateur C compatible MPI. Par exemple, si vous utilisez mpicc, vous pouvez exécuter la commande 
+suivante dans votre terminal : mpicc round_robin.c -o round_robin.
+Exécutez le programme en spécifiant le nombre de processus MPI avec la commande mpirun -np 1 ./round_robin.
+
+Rassurez-vous cet algorithme est du pur langace C pas de MPI dans le code.
+
+Exemple pour mieux réussir l'exécussion si vous êtes tout nouveau sous docker :
+    sudo apt-get update
+    sudo apt-get install openmpi
+    sudo mkdir (nom du dossier que vous souhaitez mettre le ficher.c:Test)
+    cd Test
+    sudo nano round_robin.c (copiez ou écrivez le code ici)
+    faites un Ctrl+X puis cliquez sur la touche Y
+    Et vous serez amené dans le terminal à nouveau puis tapez ces deux commendes:
+         mpicc round_robin.c -o round_robin
+         mpirun -np 1 ./round_robin
