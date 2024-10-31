@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  db:
+    image: mysql:latest
+    container_name: mysqldb_containers  # Use the existing container name here
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - "3309:3306"  # Map MySQL internal port to external port 3309
+    volumes:
+      - my-db:/var/lib/mysql
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 9000:8080
+volumes:
+  my-db:
