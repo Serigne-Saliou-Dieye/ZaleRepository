@@ -1,0 +1,12 @@
+package sn.cfpp.pfe.pfeUGB.statut;
+
+public enum TypeNotification {
+    NOUVELLE_COMMANDE,
+    LIVRAISON_EN_COURS,
+    LIVRAISON_EFFECTUÉE,
+    STATUT_COMMANDE_MODIFIÉ,
+    NOUVEAU_MESSAGE,
+    ANNULATION_COMMANDE,
+    PROMOTION_PRODUIT;
+
+}

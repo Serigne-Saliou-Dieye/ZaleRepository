@@ -1,4 +1,8 @@
 package sn.cfpp.pfe.pfeUGB.model;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -8,9 +12,14 @@ public class Client{
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long idCl;
         private String nomCl, telephoneCl, adresseCl , emailCl;
+        @JsonIgnore
+        @OneToMany(mappedBy = "client")
+        private List<Commande> commandes;
 
 
     public Client() {}
+
+  
 
     public Client(Long idCl, String nomCl, String telephoneCl, String adresseCl, String emailCl) {
         super();
@@ -19,7 +28,9 @@ public class Client{
         this.telephoneCl = telephoneCl;
         this.adresseCl = adresseCl;
         this.emailCl = emailCl;
+       
     }
+    
 
 
     public Long getIdCl() {

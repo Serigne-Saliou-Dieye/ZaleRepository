@@ -1,9 +1,12 @@
 package sn.cfpp.pfe.pfeUGB.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Produit {
@@ -11,13 +14,16 @@ public class Produit {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idProd;
     private String nomProd, descriptionProd;
-    private int prixProd;
+    private Double prixProd;
+
+    @ManyToMany(mappedBy = "produits")
+    private List<Commande> commandes;
 
     public Produit() {
     }
 
 
-    public Produit(Long idProd, String nomProd, String descriptionProd, int prixProd) {
+    public Produit(Long idProd, String nomProd, String descriptionProd, Double prixProd) {
         super();
         this.idProd = idProd;
         this.nomProd = nomProd;
@@ -50,14 +56,30 @@ public class Produit {
         this.descriptionProd = descriptionProd;
     }
 
-    public int getprixProd() {
+    public Double getprixProd() {
         return this.prixProd;
     }
 
-    public void setprixProd(int prixProd) {
+    public void setprixProd(Double prixProd) {
         this.prixProd = prixProd;
     }
 
+
+    public Double getPrixProd() {
+        return this.prixProd;
+    }
+
+    public void setPrixProd(Double prixProd) {
+        this.prixProd = prixProd;
+    }
+
+    public List<Commande> getCommandes() {
+        return this.commandes;
+    }
+
+    public void setCommandes(List<Commande> commandes) {
+        this.commandes = commandes;
+    }
     
 
 }

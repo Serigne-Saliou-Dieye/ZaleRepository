@@ -1,0 +1,65 @@
+package sn.cfpp.pfe.pfeUGB.controller;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+
+import sn.cfpp.pfe.pfeUGB.model.Livreur;
+import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
+
+@RestController
+@RequestMapping("/api/livreurs")
+public class LivreurController {
+
+    @Autowired
+    private LivreurRepository livreurRepository;
+
+
+    //créer un nouveau client
+    @PostMapping
+    public Livreur createLivreur(@RequestBody Livreur livreur){
+        return livreurRepository.save(livreur);
+    }
+
+    //obtenir la liste des clients 
+    @GetMapping
+    public Iterable<Livreur> getAllLivreurs(){
+        return livreurRepository.findAll(); 
+    }
+
+    //obtenir un client par son id
+    @GetMapping("/{id}")
+    public Optional<Livreur> getLivreurById(@PathVariable Long id){
+        return livreurRepository.findById(id);
+    }
+
+    //modifier un client 
+    @PutMapping("/{id}")
+    public Livreur updateLivreur(@PathVariable Long id, @RequestBody Livreur updateLivreur){
+        return livreurRepository.findById(id)
+               .map(livreur -> {
+                livreur = updateLivreur;
+                return livreurRepository.save(livreur);
+               })
+               .orElseThrow(() -> new RuntimeException("Livreur non trouvé"));
+    }
+
+    //supprimer un client
+    @DeleteMapping("/{id}")
+    public void deleteLivreur(@PathVariable Long id){
+        livreurRepository.deleteById(id);
+    }
+
+    //rechercher un client par son nom
+    @GetMapping("/recherche")
+        public ResponseEntity<List<Livreur>> recherche(@RequestParam("nom") String nom) {
+        List<Livreur> livreurs = livreurRepository.findByNomLivStartingWith(nom);
+        return new ResponseEntity<>(livreurs, HttpStatus.OK);
+    }
+
+}
