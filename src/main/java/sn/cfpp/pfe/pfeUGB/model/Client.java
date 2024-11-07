@@ -16,6 +16,10 @@ public class Client{
         @OneToMany(mappedBy = "client")
         private List<Commande> commandes;
 
+        @JsonIgnore
+        @OneToMany(mappedBy="clients")
+        private List<Notifications> notification;
+
 
     public Client() {}
 
@@ -71,6 +75,22 @@ public class Client{
 
     public void setEmailCl(String emailCl) {
         this.emailCl = emailCl;
+    }
+
+    public List<Commande> getCommandes() {
+        return this.commandes;
+    }
+
+    public void setCommandes(List<Commande> commandes) {
+        this.commandes = commandes;
+    }
+
+    public List<Notifications> getNotification() {
+        return this.notification;
+    }
+
+    public void setNotification(List<Notifications> notification) {
+        this.notification = notification;
     }
 
     

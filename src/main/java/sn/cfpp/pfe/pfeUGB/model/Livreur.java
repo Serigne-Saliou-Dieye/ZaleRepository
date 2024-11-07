@@ -1,9 +1,15 @@
 package sn.cfpp.pfe.pfeUGB.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Livreur {
@@ -12,7 +18,11 @@ public class Livreur {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idLivreur;
     private String nomLiv, emailLiv, telephoneLiv, vehiculeLiv;
-    
+     
+    @JsonIgnore
+    @OneToMany(mappedBy ="livreur", cascade = CascadeType.ALL)
+    private List<Livraison> livraison;
+
 
     public Livreur() {
     }
@@ -68,6 +78,15 @@ public class Livreur {
     }
     
 
+
+    public List<Livraison> getLivraison() {
+        return this.livraison;
+    }
+
+    public void setLivraison(List<Livraison> livraison) {
+        this.livraison = livraison;
+    }
+   
     
 
 }

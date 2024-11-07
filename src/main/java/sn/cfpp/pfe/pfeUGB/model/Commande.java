@@ -4,6 +4,7 @@ package sn.cfpp.pfe.pfeUGB.model;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +15,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -33,6 +36,13 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
             @ManyToOne
             @JoinColumn(name="client_id")
             private Client client; // Changer List<Client> en Client
+
+            @OneToOne(mappedBy = "commande", cascade = CascadeType.ALL)
+            private Livraison livraison;
+
+            @OneToMany(mappedBy="commande")
+            private List<Notifications> notifications;
+
 
             @ManyToMany
             @JoinTable(
@@ -99,6 +109,23 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
         this.produits = produits;
     }
 
+    public Livraison getLivraison() {
+        return this.livraison;
+    }
+
+    public void setLivraison(Livraison livraison) {
+        this.livraison = livraison;
+        // livraison.setCommande(this);
+    }
+
+
+    public List<Notifications> getNotifications() {
+        return this.notifications;
+    }
+
+    public void setNotifications(List<Notifications> notifications) {
+        this.notifications = notifications;
+    }
             
 
 }

@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,14 +31,24 @@ public class Notifications {
     @Enumerated(EnumType.STRING)
     private StatutNotification statutNotification; // Vous pouvez définir un enum `Statut` pour limiter les valeurs possibles
 
+    @ManyToOne
+    @JoinColumn(name="commande_id")
+    private Commande commande;
+
+    @ManyToOne
+    @JoinColumn(name="client_id")
+    private Client clients;
 
 
     public Notifications() {
     }
 
-    public Notifications(TypeNotification typeNotification, StatutNotification statutNotification) {
+    public Notifications(TypeNotification typeNotification, StatutNotification statutNotification, 
+    Commande commande, Client clients) {
         this.typeNotification = typeNotification;
         this.statutNotification = statutNotification;
+        this.commande = commande;
+        this.clients = clients;
     }
      
     @PrePersist
@@ -75,6 +87,24 @@ public class Notifications {
 
     public void setStatutNotification(StatutNotification statutNotification) {
         this.statutNotification = statutNotification;
+    }
+
+
+    public Commande getCommande() {
+        return this.commande;
+    }
+
+    public void setCommande(Commande commande) {
+        this.commande = commande;
+    }
+
+
+    public Client getClient() {
+        return this.clients;
+    }
+
+    public void setClient(Client client) {
+        this.clients = client;
     }
 
 }
