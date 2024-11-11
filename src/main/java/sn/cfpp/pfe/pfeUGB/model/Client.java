@@ -20,6 +20,10 @@ public class Client{
         @OneToMany(mappedBy="clients")
         private List<Notifications> notification;
 
+        // @OneToOne
+        // @JoinColumn(name = "user_id", referencedColumnName = "id")
+        // private User user;
+
 
     public Client() {}
 
@@ -93,6 +97,14 @@ public class Client{
         this.notification = notification;
     }
 
+
+    // public User getUser() {
+    //     return this.user;
+    // }
+
+    // public void setUser(User user) {
+    //     this.user = user;
+    // }
     
 
  }

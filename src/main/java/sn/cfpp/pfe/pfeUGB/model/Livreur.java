@@ -9,7 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Livreur {
@@ -22,6 +24,10 @@ public class Livreur {
     @JsonIgnore
     @OneToMany(mappedBy ="livreur", cascade = CascadeType.ALL)
     private List<Livraison> livraison;
+
+    // @OneToOne
+    // @JoinColumn(name = "user_id", referencedColumnName = "id")
+    // private User user;
 
 
     public Livreur() {
@@ -87,6 +93,14 @@ public class Livreur {
         this.livraison = livraison;
     }
    
+
+    // public User getUser() {
+    //     return this.user;
+    // }
+
+    // public void setUser(User user) {
+    //     this.user = user;
+    // }
     
 
 }
