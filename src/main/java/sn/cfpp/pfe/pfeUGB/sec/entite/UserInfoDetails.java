@@ -1,30 +1,31 @@
 package sn.cfpp.pfe.pfeUGB.sec.entite;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserInfoDetails implements UserDetails {
 
-    private String username; // Changed from 'name' to 'username' for clarity
+    private String username;
     private String password;
-    private List<GrantedAuthority> authorities;
+    private List<SimpleGrantedAuthority> authorities;
 
     public UserInfoDetails(UserInfo userInfo) {
-        this.username = userInfo.getName(); // Assuming 'name' is used as 'username'
+        // Assumer que 'name' dans UserInfo représente le nom d'utilisateur
+        this.username = userInfo.getName();  // Assuming 'name' is used as 'username'
         this.password = userInfo.getPassword();
+
+        // Supposons que userInfo.getRoles() renvoie une chaîne contenant des rôles séparés par des virgules
         this.authorities = List.of(userInfo.getRoles().split(","))
                 .stream()
-                .map(SimpleGrantedAuthority::new)
+                .map(role -> new SimpleGrantedAuthority(((String) role).trim()))  // Enlever les espaces blancs autour du rôle
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public List<SimpleGrantedAuthority> getAuthorities() {
         return authorities;
     }
 
@@ -38,23 +39,26 @@ public class UserInfoDetails implements UserDetails {
         return username;
     }
 
+    // Méthodes supplémentaires héritées de UserDetails
+
     @Override
     public boolean isAccountNonExpired() {
-        return true; // Implement your logic if you need this
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Implement your logic if you need this
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Implement your logic if you need this
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // Implement your logic if you need this
+        return true;
     }
 }
+

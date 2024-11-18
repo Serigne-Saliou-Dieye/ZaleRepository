@@ -7,9 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import sn.cfpp.pfe.pfeUGB.model.*;
 import sn.cfpp.pfe.pfeUGB.repositories.*;
+import sn.cfpp.pfe.pfeUGB.sec.entite.Roles;
+import sn.cfpp.pfe.pfeUGB.sec.entite.UserInfo;
+import sn.cfpp.pfe.pfeUGB.sec.repository.UserInfoRepository;
 import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
 import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 import sn.cfpp.pfe.pfeUGB.statut.StatutNotification;
@@ -31,6 +37,11 @@ public class PfeUgbApplication implements CommandLineRunner{
 	private CommandeRepository commandeRepository;
 	@Autowired
 	private LivraisonRepository livraisonRepository;
+	@Autowired
+	private UserInfoRepository userInfoRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(PfeUgbApplication.class, args);
@@ -39,20 +50,32 @@ public class PfeUgbApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception{
 
-		// Enregistrer des clients
-		Client cl1 = new Client(null, "Demba", "44334433", "demba12", "demba@gmail.com");
-		Client cl2 = new Client(null, "Samba", "44884433", "samba14", "samba@gmail.com");
-		clientRepository.saveAll(Arrays.asList(cl1, cl2));
+		
 	
 		// Enregistrer des produits
 		List<Produit> produits = produitRepository.saveAll(Arrays.asList(
 			new Produit(null, "lait", "lait concentré", 123.0),
 			new Produit(null, "viande", "viande haché", 1232.0)
 		));
+
+		// Enregistrer les UserInfo
+		// Enregistrer les UserInfo avec mot de passe crypté
+		UserInfo userInfo1 = new UserInfo(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_LIVREUR, null, null);
+		UserInfo userInfo3 = new UserInfo(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_CLIENT, null, null);
+		UserInfo userInfo2 = new UserInfo(null, "Saliou", "moussa@gmail.com", passwordEncoder.encode("admin"), Roles.ROLE_ADMIN, null, null);
+
+userInfoRepository.saveAll(Arrays.asList(userInfo1, userInfo2, userInfo3));
+
+
+		// Enregistrer des clients
+		Client cl1 = new Client(null, "Demba", "44334433", "demba12", "demba@gmail.com", null, null, null, userInfo1);
+		Client cl2 = new Client(null, "Samba", "44884433", "samba14", "samba@gmail.com", null, null, null, userInfo3);
+		clientRepository.saveAll(Arrays.asList(cl1, cl2));
+		
 	
 		// Enregistrer les livreurs
-		Livreur liv1 = new Livreur(null, "Moussa", "moussa@gmail.com", "8877665", "toyota");
-		Livreur liv2 = new Livreur(null, "aly", "aly@gmail.com", "33221165", "helux");
+		Livreur liv1 = new Livreur(null, "Moussa", "moussa@gmail.com", "8877665", "toyota", null, null, userInfo1);
+		Livreur liv2 = new Livreur(null, "aly", "aly@gmail.com", "33221165", "helux", null, null, userInfo2);
 		livreurRepository.saveAll(Arrays.asList(liv1, liv2));
 	
 		// Enregistrer les commandes avec les produits associés

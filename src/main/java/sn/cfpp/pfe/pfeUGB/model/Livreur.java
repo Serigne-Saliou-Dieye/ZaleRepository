@@ -12,95 +12,106 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import sn.cfpp.pfe.pfeUGB.sec.entite.UserInfo;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Livreur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idLivreur;
-    private String nomLiv, emailLiv, telephoneLiv, vehiculeLiv;
+    private String nomLiv, emailLiv, telephoneLiv, vehiculeLiv, imageLiv;
      
     @JsonIgnore
     @OneToMany(mappedBy ="livreur", cascade = CascadeType.ALL)
     private List<Livraison> livraison;
 
-    // @OneToOne
-    // @JoinColumn(name = "user_id", referencedColumnName = "id")
-    // private User user;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserInfo userLivreur;
 
 
-    public Livreur() {
-    }
+    // public Livreur() {
+    // }
 
-    public Livreur(Long idLivreur, String nomLiv, String emailLiv, String telephoneLiv, String vehiculeLiv) {
-        super();
-        this.idLivreur = idLivreur;
-        this.nomLiv = nomLiv;
-        this.emailLiv = emailLiv;
-        this.telephoneLiv = telephoneLiv;
-        this.vehiculeLiv = vehiculeLiv;
-    }
+    // public Livreur(Long idLivreur, String nomLiv, String emailLiv, String telephoneLiv, String vehiculeLiv, UserInfo userLivreur) {
+    //     super();
+    //     this.idLivreur = idLivreur;
+    //     this.nomLiv = nomLiv;
+    //     this.emailLiv = emailLiv;
+    //     this.telephoneLiv = telephoneLiv;
+    //     this.vehiculeLiv = vehiculeLiv;
+    //     this.userLivreur = userLivreur;
+    // }
 
 
-    public Long getIdLivreur() {
-        return this.idLivreur;
-    }
+    // public Long getIdLivreur() {
+    //     return this.idLivreur;
+    // }
 
-    public void setIdLivreur(Long idLivreur) {
-        this.idLivreur = idLivreur;
-    }
+    // public void setIdLivreur(Long idLivreur) {
+    //     this.idLivreur = idLivreur;
+    // }
 
-    public String getNomLiv() {
-        return this.nomLiv;
-    }
+    // public String getNomLiv() {
+    //     return this.nomLiv;
+    // }
 
-    public void setNomLiv(String nomLiv) {
-        this.nomLiv = nomLiv;
-    }
+    // public void setNomLiv(String nomLiv) {
+    //     this.nomLiv = nomLiv;
+    // }
 
-    public String getEmailLiv() {
-        return this.emailLiv;
-    }
+    // public String getEmailLiv() {
+    //     return this.emailLiv;
+    // }
 
-    public void setEmailLiv(String emailLiv) {
-        this.emailLiv = emailLiv;
-    }
+    // public void setEmailLiv(String emailLiv) {
+    //     this.emailLiv = emailLiv;
+    // }
 
-    public String getTelephoneLiv() {
-        return this.telephoneLiv;
-    }
+    // public String getTelephoneLiv() {
+    //     return this.telephoneLiv;
+    // }
 
-    public void setTelephoneLiv(String telephoneLiv) {
-        this.telephoneLiv = telephoneLiv;
-    }
+    // public void setTelephoneLiv(String telephoneLiv) {
+    //     this.telephoneLiv = telephoneLiv;
+    // }
 
-    public String getVehiculeLiv() {
-        return this.vehiculeLiv;
-    }
+    // public String getVehiculeLiv() {
+    //     return this.vehiculeLiv;
+    // }
 
-    public void setVehiculeLiv(String vehiculeLiv) {
-        this.vehiculeLiv = vehiculeLiv;
-    }
+    // public void setVehiculeLiv(String vehiculeLiv) {
+    //     this.vehiculeLiv = vehiculeLiv;
+    // }
     
 
 
-    public List<Livraison> getLivraison() {
-        return this.livraison;
-    }
-
-    public void setLivraison(List<Livraison> livraison) {
-        this.livraison = livraison;
-    }
-   
-
-    // public User getUser() {
-    //     return this.user;
+    // public List<Livraison> getLivraison() {
+    //     return this.livraison;
     // }
 
-    // public void setUser(User user) {
-    //     this.user = user;
+    // public void setLivraison(List<Livraison> livraison) {
+    //     this.livraison = livraison;
     // }
+
+    // public UserInfo getUserLivreur() {
+    //     return this.userLivreur;
+    // }
+
+    // public void setUserLivreur(UserInfo userLivreur) {
+    //     this.userLivreur = userLivreur;
+    // }
+
+    
     
 
 }
+
+   

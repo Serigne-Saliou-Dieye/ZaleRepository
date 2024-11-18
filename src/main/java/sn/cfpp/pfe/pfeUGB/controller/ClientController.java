@@ -14,6 +14,7 @@ import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
 
 @RestController
 @RequestMapping("/api/clients")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ClientController {
 
     @Autowired
