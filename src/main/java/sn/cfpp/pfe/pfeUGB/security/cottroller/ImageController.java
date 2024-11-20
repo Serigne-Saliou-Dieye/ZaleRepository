@@ -1,4 +1,4 @@
-package sn.cfpp.pfe.pfeUGB.sec.cottroller;
+package sn.cfpp.pfe.pfeUGB.security.cottroller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

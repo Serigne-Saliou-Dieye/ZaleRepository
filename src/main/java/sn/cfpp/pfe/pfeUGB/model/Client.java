@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sn.cfpp.pfe.pfeUGB.sec.entite.UserInfo;
+import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 
 @Entity
 @Data
@@ -29,7 +29,7 @@ public class Client{
 
         @OneToOne
         @JoinColumn(name = "user_id", referencedColumnName = "id")
-        private UserInfo userClient;
+        private UserInfos userClient;
 
 
     // public Client() {}

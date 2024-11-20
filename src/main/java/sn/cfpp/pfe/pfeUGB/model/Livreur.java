@@ -15,7 +15,7 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sn.cfpp.pfe.pfeUGB.sec.entite.UserInfo;
+import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 
 @Entity
 @Data
@@ -34,7 +34,7 @@ public class Livreur {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserInfo userLivreur;
+    private UserInfos userLivreur;
 
 
     // public Livreur() {

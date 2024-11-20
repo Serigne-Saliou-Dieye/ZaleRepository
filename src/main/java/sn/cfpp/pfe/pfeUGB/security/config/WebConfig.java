@@ -1,4 +1,4 @@
-package sn.cfpp.pfe.pfeUGB.sec.config;
+package sn.cfpp.pfe.pfeUGB.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

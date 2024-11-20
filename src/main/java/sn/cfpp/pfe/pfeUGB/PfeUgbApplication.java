@@ -13,9 +13,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import sn.cfpp.pfe.pfeUGB.model.*;
 import sn.cfpp.pfe.pfeUGB.repositories.*;
-import sn.cfpp.pfe.pfeUGB.sec.entite.Roles;
-import sn.cfpp.pfe.pfeUGB.sec.entite.UserInfo;
-import sn.cfpp.pfe.pfeUGB.sec.repository.UserInfoRepository;
+import sn.cfpp.pfe.pfeUGB.security.entite.Roles;
+import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
+import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
 import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
 import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 import sn.cfpp.pfe.pfeUGB.statut.StatutNotification;
@@ -60,9 +60,9 @@ public class PfeUgbApplication implements CommandLineRunner{
 
 		// Enregistrer les UserInfo
 		// Enregistrer les UserInfo avec mot de passe crypté
-		UserInfo userInfo1 = new UserInfo(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_LIVREUR, null, null);
-		UserInfo userInfo3 = new UserInfo(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_CLIENT, null, null);
-		UserInfo userInfo2 = new UserInfo(null, "Saliou", "moussa@gmail.com", passwordEncoder.encode("admin"), Roles.ROLE_ADMIN, null, null);
+		UserInfos userInfo1 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_LIVREUR, null, null);
+		UserInfos userInfo3 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_CLIENT, null, null);
+		UserInfos userInfo2 = new UserInfos(null, "Saliou", "saliou@gmail.com", passwordEncoder.encode("admin"), Roles.ROLE_ADMIN, null, null);
 
 userInfoRepository.saveAll(Arrays.asList(userInfo1, userInfo2, userInfo3));
 

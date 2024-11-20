@@ -1,4 +1,4 @@
-package sn.cfpp.pfe.pfeUGB.sec.entite;
+package sn.cfpp.pfe.pfeUGB.security.entite;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,7 +22,7 @@ import sn.cfpp.pfe.pfeUGB.model.Livreur;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo {
+public class UserInfos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

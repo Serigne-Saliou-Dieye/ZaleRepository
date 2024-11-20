@@ -1,4 +1,4 @@
-package sn.cfpp.pfe.pfeUGB.sec.entite;
+package sn.cfpp.pfe.pfeUGB.security.entite;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

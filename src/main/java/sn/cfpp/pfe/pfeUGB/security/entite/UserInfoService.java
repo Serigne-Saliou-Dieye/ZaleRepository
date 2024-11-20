@@ -1,4 +1,4 @@
-package sn.cfpp.pfe.pfeUGB.sec.entite;
+package sn.cfpp.pfe.pfeUGB.security.entite;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,8 +12,8 @@ import sn.cfpp.pfe.pfeUGB.model.Client;
 import sn.cfpp.pfe.pfeUGB.model.Livreur;
 import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
 import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
-import sn.cfpp.pfe.pfeUGB.sec.cottroller.ImageController;
-import sn.cfpp.pfe.pfeUGB.sec.repository.UserInfoRepository;
+import sn.cfpp.pfe.pfeUGB.security.cottroller.ImageController;
+import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,19 +43,19 @@ public class UserInfoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserInfo> userDetail = userInfoRepository.findByEmail(username);
+        Optional<UserInfos> userDetail = userInfoRepository.findByEmail(username);
         return userDetail.map(UserInfoDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    public String addUser(UserInfo userInfo) {
+    public String addUser(UserInfos userInfo) {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
         userInfoRepository.save(userInfo);
         return "User Added Successfully";
     }
 
     @Transactional
-    public UserInfo saveUserInfo(UserInfo userInfo, MultipartFile imageFile) throws IOException {
+    public UserInfos saveUserInfo(UserInfos userInfo, MultipartFile imageFile) throws IOException {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
 
         if (userInfo.getRoles() == null || "ROLE_ADMIN".equals(userInfo.getRoles())) {
@@ -63,7 +63,7 @@ public class UserInfoService implements UserDetailsService {
         }
 
         // Enregistrer d'abord l'utilisateur sans l'association Client ou Livreur
-        UserInfo savedUserInfo = userInfoRepository.save(userInfo);
+        UserInfos savedUserInfo = userInfoRepository.save(userInfo);
 
         // Associer l'utilisateur au rôle et enregistrer les entités associées
         if ("ROLE_CLIENT".equals(userInfo.getRoles())) {
@@ -90,12 +90,12 @@ public class UserInfoService implements UserDetailsService {
     }
 
     // Récupérer un utilisateur par son ID
-    public Optional<UserInfo> getUserById(Long id) {
+    public Optional<UserInfos> getUserById(Long id) {
         return userInfoRepository.findById(id);
     }
 
     // Mettre à jour un utilisateur
-    public UserInfo updateUser(Long id, UserInfo updatedUser) {
+    public UserInfos updateUser(Long id, UserInfos updatedUser) {
         return userInfoRepository.findById(id)
             .map(user -> {
                 user.setEmail(updatedUser.getEmail());
@@ -109,18 +109,18 @@ public class UserInfoService implements UserDetailsService {
 
     // Supprimer un utilisateur
     public void deleteUser(Long id) {
-        UserInfo user = userInfoRepository.findById(id)
+        UserInfos user = userInfoRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
         userInfoRepository.delete(user);
     }
 
     // Obtenir tous les utilisateurs
-    public List<UserInfo> getAllUsers() {
+    public List<UserInfos> getAllUsers() {
         return userInfoRepository.findAll();
     }
 
     // Rechercher un utilisateur par son nom
-    public List<UserInfo> searchByName(String name) {
+    public List<UserInfos> searchByName(String name) {
         return userInfoRepository.findByNameContainingIgnoreCase(name);
     }
 }
