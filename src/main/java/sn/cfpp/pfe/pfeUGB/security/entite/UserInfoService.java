@@ -99,7 +99,7 @@ public class UserInfoService implements UserDetailsService {
         return userInfoRepository.findById(id)
             .map(user -> {
                 user.setEmail(updatedUser.getEmail());
-                user.setName(updatedUser.getName());
+                user.setUsername(updatedUser.getUsername());
                 user.setRoles(updatedUser.getRoles());
                 user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));  // S'assurer que le mot de passe est crypté
                 return userInfoRepository.save(user);
@@ -120,7 +120,7 @@ public class UserInfoService implements UserDetailsService {
     }
 
     // Rechercher un utilisateur par son nom
-    public List<UserInfos> searchByName(String name) {
-        return userInfoRepository.findByNameContainingIgnoreCase(name);
-    }
+    // public List<UserInfos> searchByName(String name) {
+    //     return userInfoRepository.findByNameContainingIgnoreCase(name);
+    // }
 }

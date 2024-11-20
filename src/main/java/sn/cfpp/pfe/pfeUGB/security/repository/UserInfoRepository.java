@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface UserInfoRepository extends JpaRepository<UserInfos, Long> {
     Optional<UserInfos> findByEmail(String email); // Use 'email' if that is the correct field for login
 
-    List<UserInfos> findByNameContainingIgnoreCase(String name);
+    // List<UserInfos> findByNameContainingIgnoreCase(String name);
 }
 

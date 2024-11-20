@@ -114,10 +114,10 @@ public class UserController {
     }
 
     // Rechercher un utilisateur par son nom
-    @GetMapping("/users/search")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<List<UserInfos>> searchUsers(@RequestParam("name") String name) {
-        List<UserInfos> users = userInfoService.searchByName(name);
-        return ResponseEntity.ok(users);
-    }
+    // @GetMapping("/users/search")
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // public ResponseEntity<List<UserInfos>> searchUsers(@RequestParam("name") String name) {
+    //     List<UserInfos> users = userInfoService.searchByName(name);
+    //     return ResponseEntity.ok(users);
+    // }
 }

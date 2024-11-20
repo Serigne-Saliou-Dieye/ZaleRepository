@@ -16,13 +16,13 @@ public class UserInfoDetails implements UserDetails {
         // Assumer que 'email' dans UserInfo représente l'email de l'utilisateur
         this.email = userInfo.getEmail();  // 'username' devient 'email'
         this.password = userInfo.getPassword();
-
-        // Utilisation du stream() de Roles pour récupérer les rôles sous forme d'énumérations
-        this.authorities = Roles.stream()
-                .filter(role -> userInfo.getRoles().contains(role))  // Filtrer les rôles qui existent dans l'utilisateur
-                .map(role -> new SimpleGrantedAuthority(role.name()))  // Convertir chaque rôle en une authority
+    
+        // Les rôles de l'utilisateur sont directement récupérés sous forme d'énumérations
+        this.authorities = userInfo.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))  // Convertir chaque rôle en authority
                 .collect(Collectors.toList());
     }
+    
 
     @Override
     public List<SimpleGrantedAuthority> getAuthorities() {

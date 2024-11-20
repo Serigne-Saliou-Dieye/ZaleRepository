@@ -27,7 +27,7 @@ public class UserInfos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String username;
     private String email;
 
     @NotEmpty(message = "Le mot de passe ne peut pas être vide")
