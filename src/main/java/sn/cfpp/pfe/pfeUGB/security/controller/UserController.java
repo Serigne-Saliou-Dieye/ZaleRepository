@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.security.config.JwtService;
@@ -14,6 +17,8 @@ import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 
 import java.util.List;
 import java.util.Optional;
+
+import javax.naming.AuthenticationException;
 
 @RestController
 @RequestMapping("/auth")
@@ -49,26 +54,21 @@ public class UserController {
     }
     
 
-    // Générer un token JWT
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-
-    // Authentication authentication = authenticationManager.authenticate(
-
-    // new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-
-    // );
-
-    // if (authentication.isAuthenticated()) {
-
-    return jwtService.generateToken(authRequest.getUsername());
-
-    // } else {
-
-    // throw new UsernameNotFoundException("Invalid user request!");
-
-    // }
-
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        // Authentifier l'utilisateur
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+        );
+   
+        // Vérifier si l'authentification a réussi
+        if (authentication.isAuthenticated()) {
+            // Générer le jeton JWT
+            String token = jwtService.generateToken(authRequest.getEmail());
+            return ResponseEntity.ok(token);
+        } else {
+            throw new UsernameNotFoundException("Invalid user request!");
+        }
     }
     // Obtenir tous les utilisateurs
     @GetMapping
@@ -80,7 +80,7 @@ public class UserController {
 
     // Obtenir un utilisateur par son ID
     @GetMapping("/users/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserInfos> getUserById(@PathVariable Long id) {
         Optional<UserInfos> user = userInfoService.getUserById(id);
         if (user.isPresent()) {
@@ -91,7 +91,7 @@ public class UserController {
 
     // Mettre à jour un utilisateur
     @PutMapping("/users/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserInfos> updateUser(@PathVariable Long id, @RequestBody UserInfos updatedUser) {
         Optional<UserInfos> user = userInfoService.getUserById(id);
         if (user.isPresent()) {
@@ -103,7 +103,7 @@ public class UserController {
 
     // Supprimer un utilisateur
     @DeleteMapping("/users/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         try {
             userInfoService.deleteUser(id);
