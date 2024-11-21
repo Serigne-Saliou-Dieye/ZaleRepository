@@ -58,7 +58,7 @@ public class UserInfoService implements UserDetailsService {
     public UserInfos saveUserInfo(UserInfos userInfo, MultipartFile imageFile) throws IOException {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
 
-        if (userInfo.getRoles() == null || "ROLE_ADMIN".equals(userInfo.getRoles())) {
+        if (userInfo.getRoles() == null || "ADMIN".equals(userInfo.getRoles())) {
             throw new IllegalArgumentException("Le rôle ADMIN ne doit pas être associé aux entités Client ou Livreur.");
         }
 
@@ -66,7 +66,7 @@ public class UserInfoService implements UserDetailsService {
         UserInfos savedUserInfo = userInfoRepository.save(userInfo);
 
         // Associer l'utilisateur au rôle et enregistrer les entités associées
-        if ("ROLE_CLIENT".equals(userInfo.getRoles())) {
+        if ("CLIENT".equals(userInfo.getRoles())) {
             Client client = new Client();
             client.setUserClient(savedUserInfo);
             savedUserInfo.setClient(client);
@@ -75,7 +75,7 @@ public class UserInfoService implements UserDetailsService {
             client.setImageCl(imagePath);
 
             clientRepository.save(client);
-        } else if ("ROLE_LIVREUR".equals(userInfo.getRoles())) {
+        } else if ("LIVREUR".equals(userInfo.getRoles())) {
             Livreur livreur = new Livreur();
             livreur.setUserLivreur(savedUserInfo);
             savedUserInfo.setLivreur(livreur);
@@ -117,6 +117,10 @@ public class UserInfoService implements UserDetailsService {
     // Obtenir tous les utilisateurs
     public List<UserInfos> getAllUsers() {
         return userInfoRepository.findAll();
+    }
+
+    public Optional<UserInfos> findByEmail(String email) {
+        return userInfoRepository.findByEmail(email);
     }
 
     // Rechercher un utilisateur par son nom

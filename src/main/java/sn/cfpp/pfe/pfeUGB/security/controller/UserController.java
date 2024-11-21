@@ -4,14 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.security.config.JwtService;
 import sn.cfpp.pfe.pfeUGB.security.entite.AuthRequest;
+import sn.cfpp.pfe.pfeUGB.security.entite.Roles;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfoService;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 
@@ -55,24 +58,42 @@ public class UserController {
     
 
     @PostMapping("/generateToken")
+    // @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        // Authentifier l'utilisateur
+        // Authenticate the user
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
-   
-        // Vérifier si l'authentification a réussi
+
+        // Check if the authentication is successful
         if (authentication.isAuthenticated()) {
-            // Générer le jeton JWT
-            String token = jwtService.generateToken(authRequest.getEmail());
-            return ResponseEntity.ok(token);
+            // Get the authenticated user's email
+            String email = authRequest.getEmail();
+
+            // Check if the user exists in the database
+            Optional<UserInfos> userOptional = userInfoService.findByEmail(email);
+            if (userOptional.isPresent()) {
+                UserInfos user = userOptional.get();
+
+                // Check if the user's role is ADMIN
+                if (user.getRoles() == Roles.ADMIN) { // Si c'est un simple enum
+                    // Generate the JWT token
+                    String token = jwtService.generateToken(email);
+                    return ResponseEntity.ok(token);
+                } else {
+                    throw new UsernameNotFoundException("Invalid user request! User does not have the ADMIN role.");
+                }
+            } else {
+                throw new UsernameNotFoundException("User not found in the database.");
+            }
         } else {
             throw new UsernameNotFoundException("Invalid user request!");
         }
     }
+
     // Obtenir tous les utilisateurs
     @GetMapping
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserInfos>> getAllUsers() {
         List<UserInfos> users = userInfoService.getAllUsers();
         return ResponseEntity.ok(users);
@@ -80,7 +101,7 @@ public class UserController {
 
     // Obtenir un utilisateur par son ID
     @GetMapping("/users/{id}")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserInfos> getUserById(@PathVariable Long id) {
         Optional<UserInfos> user = userInfoService.getUserById(id);
         if (user.isPresent()) {
@@ -91,7 +112,7 @@ public class UserController {
 
     // Mettre à jour un utilisateur
     @PutMapping("/users/{id}")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserInfos> updateUser(@PathVariable Long id, @RequestBody UserInfos updatedUser) {
         Optional<UserInfos> user = userInfoService.getUserById(id);
         if (user.isPresent()) {
@@ -103,7 +124,7 @@ public class UserController {
 
     // Supprimer un utilisateur
     @DeleteMapping("/users/{id}")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         try {
             userInfoService.deleteUser(id);
@@ -120,4 +141,46 @@ public class UserController {
     //     List<UserInfos> users = userInfoService.searchByName(name);
     //     return ResponseEntity.ok(users);
     // }
+
+
+
+
+
+
+
+    // ------------------------------------------------------------------------------------------------
+     // Endpoint d'inscription
+    //  @PostMapping("/register")
+    //  public ResponseEntity<String> registerUser(@RequestBody UserInfos userInfos) {
+    //      try {
+    //          // Ajouter l'utilisateur avec cryptage du mot de passe
+    //          String response = userInfoService.addUser(userInfos);
+    //          return ResponseEntity.status(HttpStatus.CREATED).body("Utilisateur créé avec succès !");
+    //      } catch (Exception e) {
+    //          e.printStackTrace(); // Journaux pour le débogage
+    //          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur lors de l'inscription.");
+    //      }
+    //  }
+ 
+    //  // Endpoint de connexion
+    //  @PostMapping("/login")
+    //  public ResponseEntity<?> loginUser(@RequestBody AuthRequest authRequest) {
+    //      try {
+    //          // Authentifier l'utilisateur avec email et mot de passe
+    //          Authentication authentication = authenticationManager.authenticate(
+    //              new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+    //          );
+ 
+    //          if (authentication.isAuthenticated()) {
+    //              // Générer le jeton JWT
+    //              String token = jwtService.generateToken(authRequest.getEmail());
+    //              return ResponseEntity.ok().body(new AuthResponse(token));
+    //          } else {
+    //              return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Échec de l'authentification !");
+    //          }
+    //      } catch (Exception e) {
+    //          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou mot de passe incorrect.");
+    //      }
+    //  }
+ 
 }

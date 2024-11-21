@@ -5,9 +5,9 @@ import java.util.stream.Stream;
 
 public enum Roles {
  
-    ROLE_ADMIN,
-    ROLE_CLIENT,
-    ROLE_LIVREUR;
+    ADMIN,
+    CLIENT,
+    LIVREUR;
 
      // Méthode pour obtenir un stream de toutes les valeurs de l'énumération
      public static Stream<Roles> stream() {

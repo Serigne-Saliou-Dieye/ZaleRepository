@@ -38,9 +38,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/welcome", "/auth/addNewUser", "/api/**", "/error", "auth/generateToken", "/auth", "/auth/**").permitAll()
-                // .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
-                // .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/auth/welcome", "/auth/addNewUser", "/api/**", "/error", "/auth/generateToken","/auth/login", "/auth").permitAll()
+                .requestMatchers("/auth/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
@@ -57,7 +56,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService(null)); // Référence à UserInfoService
+        provider.setUserDetailsService(userDetailsService(null)); // Reference to UserInfoService
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

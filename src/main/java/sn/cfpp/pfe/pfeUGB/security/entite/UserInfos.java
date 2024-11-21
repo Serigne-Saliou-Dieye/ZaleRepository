@@ -1,8 +1,10 @@
 package sn.cfpp.pfe.pfeUGB.security.entite;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,6 +13,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,14 +31,22 @@ public class UserInfos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Username is mandatory")
     private String username;
+    
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
+    @Column(unique = true) // Garantie au niveau de la colonne
     private String email;
 
     @NotEmpty(message = "Le mot de passe ne peut pas être vide")
-    @JsonIgnore
+    // @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
     @Enumerated(EnumType.STRING)
-    private Roles roles = Roles.ROLE_CLIENT;
+    @Column(nullable = false)
+    private Roles roles = Roles.CLIENT;
 
    @JsonIgnore
    @OneToOne(mappedBy = "userClient", cascade = CascadeType.ALL, fetch=FetchType.LAZY)

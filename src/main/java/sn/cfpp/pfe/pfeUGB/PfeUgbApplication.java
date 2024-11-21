@@ -60,9 +60,9 @@ public class PfeUgbApplication implements CommandLineRunner{
 
 		// Enregistrer les UserInfo
 		// Enregistrer les UserInfo avec mot de passe crypté
-		UserInfos userInfo1 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_LIVREUR, null, null);
-		UserInfos userInfo3 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_CLIENT, null, null);
-		UserInfos userInfo2 = new UserInfos(null, "Saliou", "saliou@gmail.com", passwordEncoder.encode("admin"), Roles.ROLE_ADMIN, null, null);
+		UserInfos userInfo1 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.LIVREUR, null, null);
+		UserInfos userInfo3 = new UserInfos(null, "Modou", "modou@gmail.com", passwordEncoder.encode("1234"), Roles.CLIENT, null, null);
+		UserInfos userInfo2 = new UserInfos(null, "Saliou", "saliou@gmail.com", passwordEncoder.encode("admin"), Roles.ADMIN, null, null);
 
 userInfoRepository.saveAll(Arrays.asList(userInfo1, userInfo2, userInfo3));
 
