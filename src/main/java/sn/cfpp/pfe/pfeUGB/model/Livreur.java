@@ -12,6 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,12 +28,17 @@ public class Livreur {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idLivreur;
-    private String nomLiv, emailLiv, telephoneLiv, vehiculeLiv, imageLiv;
+    @NotBlank(message = "Nom is mandatory")
+    private String nomLiv;
+    @Email(message = "Email should be valid")
+    private String emailLiv;
+    private String telephoneLiv;
+    private String vehiculeLiv, imageLiv;
      
     @JsonIgnore
     @OneToMany(mappedBy ="livreur", cascade = CascadeType.ALL)
     private List<Livraison> livraison;
-
+    
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserInfos userLivreur;

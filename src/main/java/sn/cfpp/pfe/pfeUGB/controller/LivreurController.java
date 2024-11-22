@@ -14,6 +14,7 @@ import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
 
 @RestController
 @RequestMapping("/api/livreurs")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LivreurController {
 
     @Autowired

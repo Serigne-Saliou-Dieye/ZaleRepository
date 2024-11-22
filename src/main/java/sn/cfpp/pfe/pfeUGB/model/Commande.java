@@ -4,6 +4,8 @@ package sn.cfpp.pfe.pfeUGB.model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,11 +37,12 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
 
             @ManyToOne
             @JoinColumn(name="client_id")
-            private Client client; // Changer List<Client> en Client
+            private Client client; 
 
             @OneToOne(mappedBy = "commande", cascade = CascadeType.ALL)
             private Livraison livraison;
 
+            @JsonIgnore
             @OneToMany(mappedBy="commande")
             private List<Notifications> notifications;
 

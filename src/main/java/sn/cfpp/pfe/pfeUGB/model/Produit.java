@@ -2,6 +2,8 @@ package sn.cfpp.pfe.pfeUGB.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +18,7 @@ public class Produit {
     private String nomProd, descriptionProd;
     private Double prixProd;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "produits")
     private List<Commande> commandes;
 
