@@ -2,7 +2,11 @@ package sn.cfpp.pfe.pfeUGB.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
 @Entity
+// @JsonIgnoreProperties({"commandes"})
+// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idProd")
 public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,7 +24,8 @@ public class Produit {
     private String nomProd, descriptionProd;
     private Double prixProd;
 
-    @JsonIgnore
+    // @JsonIgnore
+    // @JsonManagedReference
     @ManyToMany(mappedBy = "produits")
     private List<Commande> commandes;
 
@@ -68,13 +75,6 @@ public class Produit {
     }
 
 
-    public Double getPrixProd() {
-        return this.prixProd;
-    }
-
-    public void setPrixProd(Double prixProd) {
-        this.prixProd = prixProd;
-    }
 
     public List<Commande> getCommandes() {
         return this.commandes;

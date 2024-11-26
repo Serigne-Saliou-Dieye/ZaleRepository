@@ -2,6 +2,8 @@ package sn.cfpp.pfe.pfeUGB.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,10 +33,12 @@ public class Notifications {
     @Enumerated(EnumType.STRING)
     private StatutNotification statutNotification; // Vous pouvez définir un enum `Statut` pour limiter les valeurs possibles
 
+    
     @ManyToOne
     @JoinColumn(name="commande_id")
     private Commande commande;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="client_id")
     private Client clients;

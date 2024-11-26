@@ -2,6 +2,8 @@ package sn.cfpp.pfe.pfeUGB.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -25,10 +27,12 @@ public class Livraison {
     private LocalDateTime dateDepart;
     private LocalDateTime dateArrivee;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "commande_id" , referencedColumnName = "idCmd")
     private Commande commande;  
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "livreur_id")
     private Livreur livreur;
@@ -104,7 +108,4 @@ public class Livraison {
     public void setLivreur(Livreur livreur) {
         this.livreur = livreur;
     }
-    
-
-
 }

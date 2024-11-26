@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,8 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 import sn.cfpp.pfe.pfeUGB.statut.StatutNotification;
 
 @RestController
-@RequestMapping("/api/livraison")
+@RequestMapping("/api/livraisons")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LivraisonController {
 
     private final LivraisonRepository livraisonRepository;
@@ -42,6 +44,11 @@ public class LivraisonController {
     // Create (Ajouter une nouvelle commande)
     @PostMapping
     public Livraison createLivraison(@RequestBody Livraison livraison) {
+        // Définir automatiquement la date selon le statut
+        if (livraison.getStatutLivraison() == StatutLivraison.EN_COURS) {
+            livraison.setDateDepart(LocalDateTime.now());
+        }
+
         return livraisonRepository.save(livraison);
     }
 

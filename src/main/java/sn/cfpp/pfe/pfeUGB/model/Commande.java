@@ -1,15 +1,19 @@
 package sn.cfpp.pfe.pfeUGB.model;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.type.LogicalType;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,7 +51,9 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
             private List<Notifications> notifications;
 
 
-            @ManyToMany
+            // @JsonManagedReference
+            @JsonIgnore
+            @ManyToMany(fetch = FetchType.LAZY)
             @JoinTable(
                 name = "commande_produit",
                 joinColumns = @JoinColumn(name = "commande_id"),
