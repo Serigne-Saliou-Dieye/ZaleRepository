@@ -34,6 +34,7 @@ public class Notifications {
     private StatutNotification statutNotification; // Vous pouvez définir un enum `Statut` pour limiter les valeurs possibles
 
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="commande_id")
     private Commande commande;
