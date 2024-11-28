@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.model.Client;
 import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
+import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -19,13 +20,31 @@ public class ClientController {
 
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private NotificationService notificationService;
 
 
+    // Retourner le nombre total de clients
+    // @GetMapping("/count")
+    // public ResponseEntity<Long> getClientCount() {
+    //     long count = clientRepository.count();
+    //     return ResponseEntity.ok(count);
+    // }
     //créer un nouveau client
     @PostMapping
-    public Client createClient(@RequestBody Client client){
-        return clientRepository.save(client);
+    public ResponseEntity<Client> createClient(@RequestBody Client client){
+        Client savedClient = clientRepository.save(client);
+
+        notificationService.sendNotification("Nouveau client ajouté");
+
+        return ResponseEntity.ok(savedClient) ;
     }
+
+    // @GetMapping("/send")
+    // public ResponseEntity<String> sendTestNotification() {
+    //     notificationService.sendNotification("Test de notification");
+    //     return ResponseEntity.ok("Notification envoyée");
+    // }
 
     //obtenir la liste des clients 
     @GetMapping
