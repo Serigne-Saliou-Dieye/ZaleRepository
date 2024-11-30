@@ -10,6 +10,7 @@ public class NotificationService {
     private SimpMessagingTemplate messagingTemplate;
 
     public void sendNotification(String message) {
+        System.out.println("Notification envoyée : " + message); // Log de vérification
         messagingTemplate.convertAndSend("/topic/notifications", message);
     }
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.model.Livreur;
 import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
+import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
 @RequestMapping("/api/livreurs")
@@ -19,13 +20,28 @@ public class LivreurController {
 
     @Autowired
     private LivreurRepository livreurRepository;
+    @Autowired
+    private NotificationService notificationService;
 
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getClientCount() {
+        long count = livreurRepository.count();
+        return ResponseEntity.ok(count);
+    }
 
     //créer un nouveau client
     @PostMapping
-    public Livreur createLivreur(@RequestBody Livreur livreur){
-        return livreurRepository.save(livreur);
+    public ResponseEntity<Livreur> createLivreur(@RequestBody Livreur livreur){
+        Livreur savedLivreur = livreurRepository.save(livreur);
+        notificationService.sendNotification("Nouveau livreur ajouté");
+        return ResponseEntity.ok(savedLivreur);
     }
+
+    // @PostMapping
+    // public Livreur createLivreur(@RequestBody Livreur livreur){
+    //     return livreurRepository.save(livreur);
+    // }
 
     //obtenir la liste des clients 
     @GetMapping

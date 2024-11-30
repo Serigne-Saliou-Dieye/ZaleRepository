@@ -20,15 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import sn.cfpp.pfe.pfeUGB.model.Client;
-import sn.cfpp.pfe.pfeUGB.model.Commande;
+
 import sn.cfpp.pfe.pfeUGB.model.Livraison;
-import sn.cfpp.pfe.pfeUGB.model.Notifications;
-import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
-import sn.cfpp.pfe.pfeUGB.repositories.CommandeRepository;
+
 import sn.cfpp.pfe.pfeUGB.repositories.LivraisonRepository;
 import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
-import sn.cfpp.pfe.pfeUGB.statut.StatutNotification;
+import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
 @RequestMapping("/api/livraisons")
@@ -36,6 +33,16 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutNotification;
 public class LivraisonController {
 
     private final LivraisonRepository livraisonRepository;
+    @Autowired
+    private NotificationService notificationService;
+
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getClientCount() {
+        long count = livraisonRepository.count();
+        return ResponseEntity.ok(count);
+    }
+
 
     public LivraisonController(LivraisonRepository livraisonRepository) {
         this.livraisonRepository = livraisonRepository;
@@ -43,14 +50,31 @@ public class LivraisonController {
 
     // Create (Ajouter une nouvelle commande)
     @PostMapping
-    public Livraison createLivraison(@RequestBody Livraison livraison) {
+    public ResponseEntity<Livraison> createLivraison(@RequestBody Livraison livraison) {
         // Définir automatiquement la date selon le statut
         if (livraison.getStatutLivraison() == StatutLivraison.EN_COURS) {
             livraison.setDateDepart(LocalDateTime.now());
         }
 
-        return livraisonRepository.save(livraison);
+        // Sauvegarder la livraison
+        Livraison savedLivraison = livraisonRepository.save(livraison);
+
+        // Envoyer une notification
+        notificationService.sendNotification("Nouvelle livraison ajoutée");
+
+        // Retourner la réponse
+        return ResponseEntity.ok(savedLivraison);
     }
+
+    // @PostMapping
+    // public Livraison createLivraison(@RequestBody Livraison livraison) {
+    //     // Définir automatiquement la date selon le statut
+    //     if (livraison.getStatutLivraison() == StatutLivraison.EN_COURS) {
+    //         livraison.setDateDepart(LocalDateTime.now());
+    //     }
+
+    //     return livraisonRepository.save(livraison);
+    // }
 
     // Read (Lister toutes les commandes)
     @GetMapping

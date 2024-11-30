@@ -25,11 +25,11 @@ public class ClientController {
 
 
     // Retourner le nombre total de clients
-    // @GetMapping("/count")
-    // public ResponseEntity<Long> getClientCount() {
-    //     long count = clientRepository.count();
-    //     return ResponseEntity.ok(count);
-    // }
+    @GetMapping("/count")
+    public ResponseEntity<Long> getClientCount() {
+        long count = clientRepository.count();
+        return ResponseEntity.ok(count);
+    }
     //créer un nouveau client
     @PostMapping
     public ResponseEntity<Client> createClient(@RequestBody Client client){

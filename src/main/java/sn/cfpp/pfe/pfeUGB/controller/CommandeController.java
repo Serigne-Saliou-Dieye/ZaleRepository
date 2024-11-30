@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import sn.cfpp.pfe.pfeUGB.model.Commande;
 import sn.cfpp.pfe.pfeUGB.repositories.CommandeRepository;
+import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
 @RequestMapping("/api/commandes")
@@ -27,16 +29,32 @@ public class CommandeController {
     
 
     private final CommandeRepository commandeRepository;
+    @Autowired
+    private NotificationService notificationService;
+
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getClientCount() {
+        long count = commandeRepository.count();
+        return ResponseEntity.ok(count);
+    }
 
     public CommandeController(CommandeRepository commandeRepository) {
         this.commandeRepository = commandeRepository;
     }
 
     // Create (Ajouter une nouvelle commande)
+    // @PostMapping
+    // public Commande createCommande(@RequestBody Commande commande) {
+    //     return commandeRepository.save(commande);
+    // }
     @PostMapping
-    public Commande createCommande(@RequestBody Commande commande) {
-        return commandeRepository.save(commande);
+    public ResponseEntity<Commande> createCommande(@RequestBody Commande commande){
+        Commande savedCommande = commandeRepository.save(commande);
+        notificationService.sendNotification("Nouvelle commande ajoutée");
+        return ResponseEntity.ok(savedCommande);
     }
+
 
     // Read (Lister toutes les commandes)
     @GetMapping
