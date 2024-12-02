@@ -44,17 +44,17 @@ public class UserController {
 
     // Ajouter un nouvel utilisateur
     @PostMapping("/addNewUser")
-    // public String addNewUser(@RequestBody UserInfo userInfo) {
-    //     return userInfoService.addUser(userInfo);
-    // }
     public String addNewUser(@RequestBody UserInfos userInfo) {
-        try {
-            return userInfoService.addUser(userInfo);
-        } catch (Exception e) {
-            e.printStackTrace();  // Ou utilisez Logger
-            throw e;
-        }
+        return userInfoService.addUser(userInfo);
     }
+    // public String addNewUser(@RequestBody UserInfos userInfo) {
+    //     try {
+    //         return userInfoService.addUser(userInfo);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();  // Ou utilisez Logger
+    //         throw e;
+    //     }
+    // }
     
 
     @PostMapping("/generateToken")

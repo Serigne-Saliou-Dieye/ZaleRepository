@@ -96,16 +96,36 @@ public class UserInfoService implements UserDetailsService {
 
     // Mettre à jour un utilisateur
     public UserInfos updateUser(Long id, UserInfos updatedUser) {
-        return userInfoRepository.findById(id)
-            .map(user -> {
-                user.setEmail(updatedUser.getEmail());
-                user.setUsername(updatedUser.getUsername());
-                user.setRoles(updatedUser.getRoles());
-                user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));  // S'assurer que le mot de passe est crypté
-                return userInfoRepository.save(user);
-            })
-            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+        UserInfos existingUser = getUserById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    
+        // Conserver le mot de passe actuel s'il n'est pas modifié
+        if (updatedUser.getPassword() == null || updatedUser.getPassword().isEmpty()) {
+            updatedUser.setPassword(existingUser.getPassword());
+        } else {
+            // Encoder le mot de passe s'il a été fourni
+            updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+    
+        // Mettre à jour les autres champs
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setRoles(updatedUser.getRoles());
+        // Ajoutez d'autres champs si nécessaire
+    
+        return userInfoRepository.save(existingUser);
     }
+    
+    // public UserInfos updateUser(Long id, UserInfos updatedUser) {
+    //     return userInfoRepository.findById(id)
+    //         .map(user -> {
+    //             user.setEmail(updatedUser.getEmail());
+    //             user.setUsername(updatedUser.getUsername());
+    //             user.setRoles(updatedUser.getRoles());
+    //             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));  // S'assurer que le mot de passe est crypté
+    //             return userInfoRepository.save(user);
+    //         })
+    //         .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+    // }
 
     // Supprimer un utilisateur
     public void deleteUser(Long id) {
