@@ -1,6 +1,7 @@
 package sn.cfpp.pfe.pfeUGB.security.entite;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +15,7 @@ import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
 import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
 import sn.cfpp.pfe.pfeUGB.security.cottroller.ImageController;
 import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
+import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +29,9 @@ public class UserInfoService implements UserDetailsService {
     private final ClientRepository clientRepository;
     private final LivreurRepository livreurRepository;
     private final ImageController imageController;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     public UserInfoService(UserInfoRepository userInfoRepository,
@@ -48,10 +53,12 @@ public class UserInfoService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    public String addUser(UserInfos userInfo) {
+    public ResponseEntity<UserInfos> addUser(UserInfos userInfo) {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));
-        userInfoRepository.save(userInfo);
-        return "User Added Successfully";
+        UserInfos savedUser = userInfoRepository.save(userInfo);
+        notificationService.sendNotification("Nouveau utilisateur ajouté");
+
+        return ResponseEntity.ok(savedUser) ;
     }
 
     @Transactional
@@ -114,18 +121,6 @@ public class UserInfoService implements UserDetailsService {
     
         return userInfoRepository.save(existingUser);
     }
-    
-    // public UserInfos updateUser(Long id, UserInfos updatedUser) {
-    //     return userInfoRepository.findById(id)
-    //         .map(user -> {
-    //             user.setEmail(updatedUser.getEmail());
-    //             user.setUsername(updatedUser.getUsername());
-    //             user.setRoles(updatedUser.getRoles());
-    //             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));  // S'assurer que le mot de passe est crypté
-    //             return userInfoRepository.save(user);
-    //         })
-    //         .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
-    // }
 
     // Supprimer un utilisateur
     public void deleteUser(Long id) {
@@ -143,8 +138,18 @@ public class UserInfoService implements UserDetailsService {
         return userInfoRepository.findByEmail(email);
     }
 
-    // Rechercher un utilisateur par son nom
-    // public List<UserInfos> searchByName(String name) {
-    //     return userInfoRepository.findByNameContainingIgnoreCase(name);
+    public long countUsers() {
+        return userInfoRepository.count();
+    }
+
+    //Recherche par  roles
+    // public List<UserInfos> searchByRole(Roles roles) {
+    //     return userInfoRepository.findByRole(roles);
     // }
+
+
+    // Rechercher un utilisateur par son nom
+    public List<UserInfos> searchByName(String username) {
+        return userInfoRepository.findByUsername(username);
+    }
 }

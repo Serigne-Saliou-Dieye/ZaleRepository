@@ -18,7 +18,9 @@ import sn.cfpp.pfe.pfeUGB.security.entite.Roles;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfoService;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.naming.AuthenticationException;
@@ -42,9 +44,15 @@ public class UserController {
         return "Welcome, this endpoint is not secure";
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> getClientCount() {
+        long count = userInfoService.countUsers();
+        return ResponseEntity.ok(count);
+    }
+
     // Ajouter un nouvel utilisateur
     @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody UserInfos userInfo) {
+    public ResponseEntity<UserInfos> addNewUser(@RequestBody UserInfos userInfo) {
         return userInfoService.addUser(userInfo);
     }
     // public String addNewUser(@RequestBody UserInfos userInfo) {
@@ -59,7 +67,7 @@ public class UserController {
 
     @PostMapping("/generateToken")
     // @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<Map<String, String>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         // Authenticate the user
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
@@ -76,10 +84,16 @@ public class UserController {
                 UserInfos user = userOptional.get();
 
                 // Check if the user's role is ADMIN
-                if (user.getRoles() == Roles.ADMIN) { // Si c'est un simple enum
+                if (user.getRoles() == Roles.ADMIN) { // Assuming 'Roles' is an enum
                     // Generate the JWT token
                     String token = jwtService.generateToken(email);
-                    return ResponseEntity.ok(token);
+
+                    // Prepare the response payload
+                    Map<String, String> response = new HashMap<>();
+                    response.put("token", token);
+                    response.put("username", user.getUsername()); // Assuming 'getUsername()' exists in 'UserInfos'
+
+                    return ResponseEntity.ok(response);
                 } else {
                     throw new UsernameNotFoundException("Invalid user request! User does not have the ADMIN role.");
                 }
@@ -135,12 +149,24 @@ public class UserController {
     }
 
     // Rechercher un utilisateur par son nom
-    // @GetMapping("/users/search")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    // public ResponseEntity<List<UserInfos>> searchUsers(@RequestParam("name") String name) {
-    //     List<UserInfos> users = userInfoService.searchByName(name);
-    //     return ResponseEntity.ok(users);
+    // @GetMapping("/roles/{roles}")
+    // public List<UserInfos> searchRoles(@RequestParam("roles") Roles roles) {
+    //     // List<UserInfos> users = userInfoService.searchByRole(role);
+    //     // return ResponseEntity.ok(users);
+    //     return userInfoService.searchByRole(roles);
     // }
+
+
+
+
+    // Rechercher un utilisateur par son nom
+    @GetMapping("/users/search")
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public List<UserInfos> searchUsers(@RequestParam("username") String username) {
+        // List<UserInfos> users = userInfoService.searchByName(username);
+        // return ResponseEntity.ok(users);
+        return userInfoService.searchByName(username);
+    }
 
 
 
