@@ -48,6 +48,10 @@ public class UserInfos {
     @Column(nullable = false)
     private Roles roles = Roles.CLIENT;
 
+    @Column(nullable = false)
+    private boolean isEnabled = true; // Par défaut, le compte est actif.
+
+
    @JsonIgnore
    @OneToOne(mappedBy = "userClient", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
    private Client client;

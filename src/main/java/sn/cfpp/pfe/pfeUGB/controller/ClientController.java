@@ -1,6 +1,7 @@
 package sn.cfpp.pfe.pfeUGB.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.model.Client;
 import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
+import sn.cfpp.pfe.pfeUGB.visualisations.service.ClientService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
@@ -22,6 +24,8 @@ public class ClientController {
     private ClientRepository clientRepository;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    ClientService clientService;
 
 
     // Retourner le nombre total de clients
@@ -80,6 +84,12 @@ public class ClientController {
     public ResponseEntity<List<Client>> recherche(@RequestParam("nom") String nom) {
         List<Client> clients = clientRepository.findByNomClStartingWith(nom);
         return new ResponseEntity<>(clients, HttpStatus.OK);
+    }
+
+    @GetMapping("/top-active")
+    public ResponseEntity<List<Map<String, Object>>> getTop5MostActiveClients() {
+        List<Map<String, Object>> topClients = clientService.getTop5MostActiveClients();
+        return ResponseEntity.ok(topClients);
     }
 
 

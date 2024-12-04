@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import sn.cfpp.pfe.pfeUGB.model.Commande;
 import sn.cfpp.pfe.pfeUGB.repositories.CommandeRepository;
+import sn.cfpp.pfe.pfeUGB.visualisations.dto.MonthlyOrdersDTO;
+import sn.cfpp.pfe.pfeUGB.visualisations.dto.OrderStatusStatsDTO;
+import sn.cfpp.pfe.pfeUGB.visualisations.service.CommandeService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
@@ -31,6 +34,8 @@ public class CommandeController {
     private final CommandeRepository commandeRepository;
     @Autowired
     private NotificationService notificationService;
+     @Autowired
+    private CommandeService commandeService;
 
 
     @GetMapping("/count")
@@ -92,6 +97,18 @@ public class CommandeController {
         List<Commande> commandes = commandeRepository.findByDateCmd(dateCmd);  // Utiliser "findByDateCmd" ici
         return new ResponseEntity<>(commandes, HttpStatus.OK);
 }
+
+    @GetMapping("/monthly-orders")
+    public ResponseEntity<List<MonthlyOrdersDTO>> getMonthlyOrders() {
+        List<MonthlyOrdersDTO> monthlyOrders = commandeService.getMonthlyOrdersStats();
+        return ResponseEntity.ok(monthlyOrders);
+    }
+
+    @GetMapping("/status-stats")
+    public ResponseEntity<List<OrderStatusStatsDTO>> getOrderStatusStats() {
+        List<OrderStatusStatsDTO> statusStats = commandeService.getOrderStatusStats();
+        return ResponseEntity.ok(statusStats);
+    }
 
 
 }

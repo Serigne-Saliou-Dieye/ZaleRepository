@@ -1,6 +1,7 @@
 package sn.cfpp.pfe.pfeUGB.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.model.Livreur;
 import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
+import sn.cfpp.pfe.pfeUGB.visualisations.service.LivreurService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
@@ -22,6 +24,9 @@ public class LivreurController {
     private LivreurRepository livreurRepository;
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private LivreurService livreurService;
 
 
     @GetMapping("/count")
@@ -77,6 +82,12 @@ public class LivreurController {
         public ResponseEntity<List<Livreur>> recherche(@RequestParam("nom") String nom) {
         List<Livreur> livreurs = livreurRepository.findByNomLivStartingWith(nom);
         return new ResponseEntity<>(livreurs, HttpStatus.OK);
+    }
+
+    @GetMapping("/top-active")
+    public ResponseEntity<List<Map<String, Object>>> getTop5MostActiveLivreur() {
+        List<Map<String, Object>> topLivreurs = livreurService.getTop5MostActiveLivreurs();
+        return ResponseEntity.ok(topLivreurs);
     }
 
 }

@@ -60,30 +60,53 @@ public class PfeUgbApplication implements CommandLineRunner{
 
 		// Enregistrer les UserInfo
 		// Enregistrer les UserInfo avec mot de passe crypté
-		UserInfos userInfo1 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.LIVREUR, null, null);
-		UserInfos userInfo3 = new UserInfos(null, "Modou", "modou@gmail.com", passwordEncoder.encode("1234"), Roles.CLIENT, null, null);
-		UserInfos userInfo2 = new UserInfos(null, "Saliou", "saliou@gmail.com", passwordEncoder.encode("admin"), Roles.ADMIN, null, null);
+		UserInfos userInfo1 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.LIVREUR, false, null, null);
+		UserInfos userInfo3 = new UserInfos(null, "Modou", "modou@gmail.com", passwordEncoder.encode("1234"), Roles.ADMIN, false, null, null);
+		UserInfos userInfo2 = new UserInfos(null, "Saliou", "saliou@gmail.com", passwordEncoder.encode("admin"), Roles.ADMIN, true, null, null);
+		UserInfos userInfo4 = new UserInfos(null, "Aly", "aly@gmail.com", passwordEncoder.encode("admin"), Roles.LIVREUR, true, null, null);
+		UserInfos userInfo5 = new UserInfos(null, "Abdou", "abdou@gmail.com", passwordEncoder.encode("admin"), Roles.CLIENT, true, null, null);
+		UserInfos userInfo6 = new UserInfos(null, "Abou", "abou@gmail.com", passwordEncoder.encode("admin"), Roles.CLIENT, true, null, null);
 
-userInfoRepository.saveAll(Arrays.asList(userInfo1, userInfo2, userInfo3));
+		userInfoRepository.saveAll(Arrays.asList(userInfo1, userInfo2, userInfo3, userInfo4, userInfo5, userInfo6));
 
 
 		// Enregistrer des clients
 		Client cl1 = new Client(null, "Demba", "44334433", "demba12", "demba@gmail.com", null, null, null, userInfo1);
 		Client cl2 = new Client(null, "Samba", "44884433", "samba14", "samba@gmail.com", null, null, null, userInfo3);
-		clientRepository.saveAll(Arrays.asList(cl1, cl2));
+		Client cl3 = new Client(null, "Aw", "44884433", "aw12", "aw@gmail.com", null, null, null, userInfo5);
+		Client cl4 = new Client(null, "Teuw", "44884433", "teuw14", "teuw@gmail.com", null, null, null, userInfo2);
+		Client cl5 = new Client(null, "Ba", "44884433", "ba123", "ba@gmail.com", null, null, null, userInfo4);
+		Client cl6 = new Client(null, "Ba", "44884433", "ba123", "ba@gmail.com", null, null, null, userInfo6);
+		clientRepository.saveAll(Arrays.asList(cl1, cl2, cl3, cl4, cl5, cl6));
 		
 	
 		// Enregistrer les livreurs
 		Livreur liv1 = new Livreur(null, "Moussa", "moussa@gmail.com", "8877665", "toyota", null, null, userInfo1);
 		Livreur liv2 = new Livreur(null, "aly", "aly@gmail.com", "33221165", "helux", null, null, userInfo2);
-		livreurRepository.saveAll(Arrays.asList(liv1, liv2));
+		Livreur liv3 = new Livreur(null, "seck", "seck@gmail.com", "33221165", "helux", null, null, userInfo3);
+		Livreur liv4 = new Livreur(null, "sall", "sall@gmail.com", "33221165", "helux", null, null, userInfo4);
+		livreurRepository.saveAll(Arrays.asList(liv1, liv2, liv3, liv4));
 	
 		// Enregistrer les commandes avec les produits associés
 		Commande com1 = new Commande(StatutCommande.ANNULEE, cl1);
-		Commande com2 = new Commande(StatutCommande.LIVREE, cl2);
+		Commande com2 = new Commande(StatutCommande.LIVREE, cl5);
+		Commande com3 = new Commande(StatutCommande.EN_ATTENTE, cl2);
+		Commande com4 = new Commande(StatutCommande.EN_ATTENTE, cl3);
+		Commande com5 = new Commande(StatutCommande.LIVREE, cl1);
+		Commande com6 = new Commande(StatutCommande.EN_ATTENTE, cl3);
+		Commande com7 = new Commande(StatutCommande.TRAITEE, cl5);
+		Commande com8 = new Commande(StatutCommande.TRAITEE, cl6);
+		Commande com9 = new Commande(StatutCommande.TRAITEE, cl4);
 		com1.setProduits(produits);
 		com2.setProduits(produits);
-		commandeRepository.saveAll(Arrays.asList(com1, com2));
+		com3.setProduits(produits);
+		com4.setProduits(produits);
+		com5.setProduits(produits);
+		com6.setProduits(produits);
+		com7.setProduits(produits);
+		com8.setProduits(produits);
+		com9.setProduits(produits);
+		commandeRepository.saveAll(Arrays.asList(com1, com2, com3, com4, com5, com6, com7, com8, com9));
 	
 		
 		// Enregistrer les livraisons et les associer aux commandes

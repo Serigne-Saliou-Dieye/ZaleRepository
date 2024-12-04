@@ -66,44 +66,48 @@ public class UserController {
     
 
     @PostMapping("/generateToken")
-    // @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Map<String, String>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        // Authenticate the user
+        // Authentification de l'utilisateur
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
 
-        // Check if the authentication is successful
-        if (authentication.isAuthenticated()) {
-            // Get the authenticated user's email
-            String email = authRequest.getEmail();
-
-            // Check if the user exists in the database
-            Optional<UserInfos> userOptional = userInfoService.findByEmail(email);
-            if (userOptional.isPresent()) {
-                UserInfos user = userOptional.get();
-
-                // Check if the user's role is ADMIN
-                if (user.getRoles() == Roles.ADMIN) { // Assuming 'Roles' is an enum
-                    // Generate the JWT token
-                    String token = jwtService.generateToken(email);
-
-                    // Prepare the response payload
-                    Map<String, String> response = new HashMap<>();
-                    response.put("token", token);
-                    response.put("username", user.getUsername()); // Assuming 'getUsername()' exists in 'UserInfos'
-
-                    return ResponseEntity.ok(response);
-                } else {
-                    throw new UsernameNotFoundException("Invalid user request! User does not have the ADMIN role.");
-                }
-            } else {
-                throw new UsernameNotFoundException("User not found in the database.");
-            }
-        } else {
+        if (!authentication.isAuthenticated()) {
             throw new UsernameNotFoundException("Invalid user request!");
         }
+
+        // Recherche de l'utilisateur par email
+        Optional<UserInfos> userOptional = userInfoService.findByEmail(authRequest.getEmail());
+        if (userOptional.isEmpty()) {
+            throw new UsernameNotFoundException("Utilisateur non trouvé dans la base.");
+        }
+
+        UserInfos user = userOptional.get();
+
+        // Vérification si l'utilisateur est activé
+        if (!user.isEnabled()) {
+            throw new UsernameNotFoundException("Utilisateur désactivé. Veuillez contacter l'administrateur.");
+        }
+
+        // Vérification du rôle de l'utilisateur
+        if (user.getRoles() != Roles.ADMIN) {
+            throw new UsernameNotFoundException("Seuls les administrateurs sont autorisés.");
+        }
+
+        // Génération du token JWT
+        String token = jwtService.generateToken(authRequest.getEmail());
+
+        // Réponse
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        response.put("username", user.getUsername());
+        response.put("isEnabled", String.valueOf(user.isEnabled()));
+
+
+        return ResponseEntity.ok(response);
     }
+
+
 
     // Obtenir tous les utilisateurs
     @GetMapping
@@ -162,10 +166,17 @@ public class UserController {
     // Rechercher un utilisateur par son nom
     @GetMapping("/users/search")
     // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public List<UserInfos> searchUsers(@RequestParam("username") String username) {
+    public Optional<UserInfos> searchUsers(@RequestParam("username") String username) {
         // List<UserInfos> users = userInfoService.searchByName(username);
         // return ResponseEntity.ok(users);
         return userInfoService.searchByName(username);
+    }
+
+    // Activation d'un compte ou desactivation
+    @PatchMapping("/{id}/enable")
+    public ResponseEntity<String> toggleUserAccount(@PathVariable Long id, @RequestParam boolean isEnabled) {
+        userInfoService.toggleUserAccount(id, isEnabled);
+        return ResponseEntity.ok(isEnabled ? "Compte activé" : "Compte désactivé");
     }
 
 

@@ -2,6 +2,8 @@ package sn.cfpp.pfe.pfeUGB.security.entite;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -48,9 +50,28 @@ public class UserInfoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserInfos> userDetail = userInfoRepository.findByEmail(username);
-        return userDetail.map(UserInfoDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        // Recherche de l'utilisateur par username
+        UserInfos userInfo = userInfoRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable : " + username));
+
+        // Vérification si l'utilisateur est activé
+        if (!userInfo.isEnabled()) {
+            throw new UsernameNotFoundException("Utilisateur désactivé : " + username);
+        }
+
+        // Conversion des rôles/permissions
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(userInfo.getRoles().name()));
+
+        // Retour d'un objet UserDetails
+        return new org.springframework.security.core.userdetails.User(
+                userInfo.getUsername(),
+                userInfo.getPassword(),
+                userInfo.isEnabled(),
+                true, // accountNonExpired
+                true, // credentialsNonExpired
+                true, // accountNonLocked
+                authorities
+        );
     }
 
     public ResponseEntity<UserInfos> addUser(UserInfos userInfo) {
@@ -149,7 +170,14 @@ public class UserInfoService implements UserDetailsService {
 
 
     // Rechercher un utilisateur par son nom
-    public List<UserInfos> searchByName(String username) {
+    public Optional<UserInfos> searchByName(String username) {
         return userInfoRepository.findByUsername(username);
+    }
+
+    public void toggleUserAccount(Long id, boolean isEnabled) {
+        UserInfos userInfo = userInfoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        userInfo.setEnabled(isEnabled); // Mise à jour de l'état
+        userInfoRepository.save(userInfo); // Sauvegarder dans la base
     }
 }

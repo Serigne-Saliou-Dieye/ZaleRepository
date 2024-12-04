@@ -3,14 +3,25 @@ package sn.cfpp.pfe.pfeUGB.security.entite;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
 
 public class UserInfoDetails implements UserDetails {
 
     private String email;  // Utilisation de l'email au lieu de username
     private String password;
     private List<SimpleGrantedAuthority> authorities;
+
+    @Autowired
+    private UserInfos userInfo;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
 
     public UserInfoDetails(UserInfos userInfo) {
         // Assumer que 'email' dans UserInfo représente l'email de l'utilisateur
@@ -22,6 +33,7 @@ public class UserInfoDetails implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.name()))  // Convertir chaque rôle en authority
                 .collect(Collectors.toList());
     }
+    
     
 
     @Override
@@ -57,10 +69,10 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
-    }
+        
+        return userInfo.isEnabled(); // Retourne l'état depuis l'entité UserInfo
 
-    public static UserDetails loadUserByUsername(String email) {
-        throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
     }
+   
+    
 }
