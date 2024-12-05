@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import sn.cfpp.pfe.pfeUGB.model.Client;
+import sn.cfpp.pfe.pfeUGB.model.Commande;
+import sn.cfpp.pfe.pfeUGB.model.Livraison;
 import sn.cfpp.pfe.pfeUGB.model.Livreur;
 import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
 import sn.cfpp.pfe.pfeUGB.visualisations.service.LivreurService;
@@ -89,5 +91,16 @@ public class LivreurController {
         List<Map<String, Object>> topLivreurs = livreurService.getTop5MostActiveLivreurs();
         return ResponseEntity.ok(topLivreurs);
     }
+
+    // @GetMapping("/{id}/livraisons")
+    // public ResponseEntity<?> getLivreurLivraison(@PathVariable Long id) {
+    //     Optional<Livreur> livreur = livreurRepository.findById(id);
+    //     if (!livreur.isPresent()) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Livreur not found");
+    //     }
+    //     List<Livraison> livraisons = livreur.get().getLivraison();
+    //     return ResponseEntity.ok(livraisons);
+    // }
+
 
 }

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import sn.cfpp.pfe.pfeUGB.model.Commande;
 import sn.cfpp.pfe.pfeUGB.repositories.CommandeRepository;
+import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
+import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
 import sn.cfpp.pfe.pfeUGB.visualisations.dto.MonthlyOrdersDTO;
 import sn.cfpp.pfe.pfeUGB.visualisations.dto.OrderStatusStatsDTO;
 import sn.cfpp.pfe.pfeUGB.visualisations.service.CommandeService;
@@ -34,8 +39,10 @@ public class CommandeController {
     private final CommandeRepository commandeRepository;
     @Autowired
     private NotificationService notificationService;
-     @Autowired
+    @Autowired
     private CommandeService commandeService;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
 
     @GetMapping("/count")
@@ -49,6 +56,29 @@ public class CommandeController {
     }
 
     // Create (Ajouter une nouvelle commande)
+    // @PostMapping
+    // public ResponseEntity<Commande> createCommande(@RequestBody Commande commande, 
+    //                                             @AuthenticationPrincipal UserDetails userDetails) {
+    //     if (userDetails == null) {
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Vérifie que l'utilisateur est connecté
+    //     }
+        
+    //     // Récupérer l'utilisateur depuis le repository (ou injecter directement)
+    //     UserInfos user = userInfoRepository.findByUsername(userDetails.getUsername())
+    //                     .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable"));
+        
+    //     // Associer l'utilisateur connecté à la commande
+    //     commande.setClient(user.getClient());
+        
+    //     // Sauvegarder la commande
+    //     Commande savedCommande = commandeRepository.save(commande);
+        
+    //     // Envoyer une notification
+    //     notificationService.sendNotification("Nouvelle commande ajoutée par " + userDetails.getUsername());
+        
+    //     return ResponseEntity.ok(savedCommande);
+    // }
+
     // @PostMapping
     // public Commande createCommande(@RequestBody Commande commande) {
     //     return commandeRepository.save(commande);

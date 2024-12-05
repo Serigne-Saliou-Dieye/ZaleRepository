@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 
 import sn.cfpp.pfe.pfeUGB.model.Client;
+import sn.cfpp.pfe.pfeUGB.model.Commande;
 import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
+import sn.cfpp.pfe.pfeUGB.repositories.CommandeRepository;
 import sn.cfpp.pfe.pfeUGB.visualisations.service.ClientService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
@@ -26,6 +28,8 @@ public class ClientController {
     private NotificationService notificationService;
     @Autowired
     ClientService clientService;
+    @Autowired
+    CommandeRepository commandeRepository;
 
 
     // Retourner le nombre total de clients
@@ -90,6 +94,18 @@ public class ClientController {
     public ResponseEntity<List<Map<String, Object>>> getTop5MostActiveClients() {
         List<Map<String, Object>> topClients = clientService.getTop5MostActiveClients();
         return ResponseEntity.ok(topClients);
+    }
+
+
+    // Récupérer les commandes d'un client
+    @GetMapping("/{id}/commandes")
+    public ResponseEntity<?> getClientCommandes(@PathVariable Long id) {
+        Optional<Client> client = clientRepository.findById(id);
+        if (!client.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found");
+        }
+        List<Commande> commandes = client.get().getCommandes();
+        return ResponseEntity.ok(commandes);
     }
 
 
