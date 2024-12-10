@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import sn.cfpp.pfe.pfeUGB.model.Client;
 import sn.cfpp.pfe.pfeUGB.model.Commande;
+import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
 import sn.cfpp.pfe.pfeUGB.repositories.CommandeRepository;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
@@ -43,6 +47,8 @@ public class CommandeController {
     private CommandeService commandeService;
     @Autowired
     private UserInfoRepository userInfoRepository;
+    @Autowired
+    ClientRepository clientRepository;
 
 
     @GetMapping("/count")
@@ -56,6 +62,40 @@ public class CommandeController {
     }
 
     // Create (Ajouter une nouvelle commande)
+    // @PostMapping
+    // public ResponseEntity<?> createCommande(@RequestBody Commande commande) {
+    //     try {
+    //         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    //         System.out.println("Email extrait : " + email);
+
+    //         if (email == null || email.equals("anonymousUser")) {
+    //             throw new IllegalArgumentException("Utilisateur non authentifié " + email);
+    //         }
+
+    //         // Trouver l'utilisateur par email
+    //         UserInfos userInfo = userInfoRepository.findByEmail(email)
+    //                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé avec l'email : " + email));
+
+    //         // Trouver le client associé à cet utilisateur
+    //         Client client = clientRepository.findByUserClient(userInfo)
+    //                 .orElseThrow(() -> new IllegalArgumentException("Aucun client associé à cet utilisateur"));
+
+    //         // Associer la commande au client
+    //         commande.setClient(client);
+    //         Commande savedCommande = commandeRepository.save(commande);
+
+    //         // Envoyer une notification
+    //         notificationService.sendNotification("Nouvelle commande ajoutée par le client : " + client.getNomCl());
+
+    //         return ResponseEntity.ok(savedCommande);
+
+    //     } catch (IllegalArgumentException e) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur : " + e.getMessage());
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne : " + e.getMessage());
+    //     }
+    // }
+
     // @PostMapping
     // public ResponseEntity<Commande> createCommande(@RequestBody Commande commande, 
     //                                             @AuthenticationPrincipal UserDetails userDetails) {
@@ -84,7 +124,7 @@ public class CommandeController {
     //     return commandeRepository.save(commande);
     // }
     @PostMapping
-    public ResponseEntity<Commande> createCommande(@RequestBody Commande commande){
+    public ResponseEntity<Commande> createCommande(@RequestBody Commande commande){            
         Commande savedCommande = commandeRepository.save(commande);
         notificationService.sendNotification("Nouvelle commande ajoutée");
         return ResponseEntity.ok(savedCommande);
@@ -93,6 +133,7 @@ public class CommandeController {
 
     // Read (Lister toutes les commandes)
     @GetMapping
+    // @PreAuthorize("hasRole('ADMIN')")
     public Iterable<Commande> getAllCammandes(){
         return commandeRepository.findAll(); 
     }

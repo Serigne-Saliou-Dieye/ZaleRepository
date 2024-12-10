@@ -46,7 +46,7 @@ public class UserInfos {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Roles roles = Roles.CLIENT;
+    private Roles roles = Roles.ROLE_CLIENT;
 
     @Column(nullable = false)
     private boolean isEnabled = true; // Par défaut, le compte est actif.

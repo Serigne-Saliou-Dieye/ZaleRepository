@@ -3,6 +3,7 @@ package sn.cfpp.pfe.pfeUGB.security.config;
 import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -26,6 +27,7 @@ import sn.cfpp.pfe.pfeUGB.security.entite.UserInfoService;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@ComponentScan
 public class SecurityConfig {
 
     private final JwtAuthFilter authFilter;
@@ -44,7 +46,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/welcome", "/auth/addNewUser", "/api/**", "/error", "/auth/generateToken","/auth/login", "/auth/**", "/ws-notifications/**").permitAll()
-                .requestMatchers("/auth/**").hasRole("ADMIN")
+                .requestMatchers("/auth/**").hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated())
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())

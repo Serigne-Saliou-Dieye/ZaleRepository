@@ -1,5 +1,7 @@
 package sn.cfpp.pfe.pfeUGB.security.entite;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -60,21 +60,21 @@ public class PfeUgbApplication implements CommandLineRunner{
 
 		// Enregistrer les UserInfo
 		// Enregistrer les UserInfo avec mot de passe crypté
-		UserInfos userInfo1 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.LIVREUR, false, null, null);
-		UserInfos userInfo3 = new UserInfos(null, "Modou", "modou@gmail.com", passwordEncoder.encode("1234"), Roles.ADMIN, false, null, null);
-		UserInfos userInfo2 = new UserInfos(null, "Saliou", "saliou@gmail.com", passwordEncoder.encode("admin"), Roles.ADMIN, true, null, null);
-		UserInfos userInfo4 = new UserInfos(null, "Aly", "aly@gmail.com", passwordEncoder.encode("admin"), Roles.LIVREUR, true, null, null);
-		UserInfos userInfo5 = new UserInfos(null, "Abdou", "abdou@gmail.com", passwordEncoder.encode("admin"), Roles.CLIENT, true, null, null);
-		UserInfos userInfo6 = new UserInfos(null, "Abou", "abou@gmail.com", passwordEncoder.encode("admin"), Roles.CLIENT, true, null, null);
+		UserInfos userInfo1 = new UserInfos(null, "Moussa", "moussa@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_LIVREUR, false, null, null);
+		UserInfos userInfo3 = new UserInfos(null, "Modou", "modou@gmail.com", passwordEncoder.encode("1234"), Roles.ROLE_ADMIN, true, null, null);
+		UserInfos userInfo2 = new UserInfos(null, "Saliou", "saliou@gmail.com", passwordEncoder.encode("admin"), Roles.ROLE_CLIENT, true, null, null);
+		UserInfos userInfo4 = new UserInfos(null, "Aly", "aly@gmail.com", passwordEncoder.encode("admin"), Roles.ROLE_LIVREUR, true, null, null);
+		UserInfos userInfo5 = new UserInfos(null, "Abdou", "abdou@gmail.com", passwordEncoder.encode("admin"), Roles.ROLE_CLIENT, true, null, null);
+		UserInfos userInfo6 = new UserInfos(null, "Abou", "abou@gmail.com", passwordEncoder.encode("admin"), Roles.ROLE_CLIENT, true, null, null);
 
 		userInfoRepository.saveAll(Arrays.asList(userInfo1, userInfo2, userInfo3, userInfo4, userInfo5, userInfo6));
 
-
+		
 		// Enregistrer des clients
 		Client cl1 = new Client(null, "Demba", "44334433", "demba12", "demba@gmail.com", null, null, null, userInfo1);
-		Client cl2 = new Client(null, "Samba", "44884433", "samba14", "samba@gmail.com", null, null, null, userInfo3);
+		Client cl2 = new Client(null, "Saliou", "44884433", "samba14", "saliou@gmail.com", null, null, null, userInfo2);
 		Client cl3 = new Client(null, "Aw", "44884433", "aw12", "aw@gmail.com", null, null, null, userInfo5);
-		Client cl4 = new Client(null, "Teuw", "44884433", "teuw14", "teuw@gmail.com", null, null, null, userInfo2);
+		Client cl4 = new Client(null, "Teuw", "44884433", "teuw14", "teuw@gmail.com", null, null, null, userInfo3);
 		Client cl5 = new Client(null, "Ba", "44884433", "ba123", "ba@gmail.com", null, null, null, userInfo4);
 		Client cl6 = new Client(null, "Ball", "44884433", "ball123", "ball@gmail.com", null, null, null, userInfo6);
 		clientRepository.saveAll(Arrays.asList(cl1, cl2, cl3, cl4, cl5, cl6));

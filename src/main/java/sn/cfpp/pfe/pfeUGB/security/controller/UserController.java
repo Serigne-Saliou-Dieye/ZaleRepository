@@ -90,8 +90,8 @@ public class UserController {
         }
 
         // Vérification du rôle de l'utilisateur
-        if (user.getRoles() != Roles.ADMIN) {
-            throw new UsernameNotFoundException("Seuls les administrateurs sont autorisés.");
+        if (user.getRoles() != Roles.ROLE_ADMIN){
+            throw new UsernameNotFoundException("Seuls les administrateurs et les clients sont autorisés .");
         }
 
         // Génération du token JWT

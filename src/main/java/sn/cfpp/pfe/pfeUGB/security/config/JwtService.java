@@ -3,48 +3,47 @@ package sn.cfpp.pfe.pfeUGB.security.config;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
 
 @Component
+@ComponentScan
 public class JwtService {
 
-    private static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+    // private static final String SECRET = "WmGjd8H9LQk6P1BvE3Hzx/+1dTgf4XPyZN2yU5EhrwQ=";
+    private static final String SECRET = "HZpHOTbEYXU1mFfYURISkXG9Dri0l2w4imsHWTb2RPI=";
+
 
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String email) { // Change: Using email instead of username
+    public String generateToken(String username) {
         return Jwts.builder()
-                .setSubject(email) // Change: Set email as subject
+                .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // Token valid for 30 minutes
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 30 min expiration
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        try {
-            String email = extractEmail(token); // Change: Extract email instead of username
-            return email.equals(userDetails.getUsername()) && !isTokenExpired(token); // Change: Compare email
-        } catch (JwtException | IllegalArgumentException e) {
-            System.err.println("Invalid token: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public String extractEmail(String token) { // Change: Extract email
+    public String extractUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
