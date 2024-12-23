@@ -38,15 +38,46 @@ public class ClientController {
         long count = clientRepository.count();
         return ResponseEntity.ok(count);
     }
+
+    // @GetMapping("/latest")
+    // public ResponseEntity<Client> getLatestClient() {
+    //     Client latestClient = clientRepository.findTopByOrderByIdClDesc(); // Utilisez la méthode mise à jour
+    //     if (latestClient != null) {
+    //         return ResponseEntity.ok(latestClient);
+    //     } else {
+    //         return ResponseEntity.notFound().build(); // Si aucun client n'est trouvé
+    //     }
+    // }
     //créer un nouveau client
     @PostMapping
-    public ResponseEntity<Client> createClient(@RequestBody Client client){
-        Client savedClient = clientRepository.save(client);
+    public ResponseEntity<Client> createClient(@RequestBody Client client, @RequestParam Long userId) {
+        // Utiliser le service pour créer le client
+        Client savedClient = clientService.createClient(client, userId);
 
+        // Envoyer une notification
         notificationService.sendNotification("Nouveau client ajouté");
 
-        return ResponseEntity.ok(savedClient) ;
+        return ResponseEntity.ok(savedClient);
     }
+    // @PostMapping
+    // public ResponseEntity<Client> createClient(@RequestBody Client client){
+    //     Client savedClient = clientRepository.save(client);
+
+    //     notificationService.sendNotification("Nouveau client ajouté");
+
+    //     return ResponseEntity.ok(savedClient) ;
+    // }
+
+    @GetMapping("/latest")
+    public ResponseEntity<Client> getLatestClient() {
+        Client latestClient = clientRepository.findTopByOrderByIdClDesc(); // Utilisez la méthode mise à jour
+        if (latestClient != null) {
+            return ResponseEntity.ok(latestClient);
+        } else {
+            return ResponseEntity.notFound().build(); // Si aucun client n'est trouvé
+        }
+    }
+
 
     // @GetMapping("/send")
     // public ResponseEntity<String> sendTestNotification() {

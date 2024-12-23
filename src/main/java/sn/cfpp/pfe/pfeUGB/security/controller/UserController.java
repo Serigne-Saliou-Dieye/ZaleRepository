@@ -9,12 +9,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.security.config.JwtService;
 import sn.cfpp.pfe.pfeUGB.security.entite.AuthRequest;
 import sn.cfpp.pfe.pfeUGB.security.entite.Roles;
+import sn.cfpp.pfe.pfeUGB.security.entite.UserInfoDetails;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfoService;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 
@@ -65,53 +67,89 @@ public class UserController {
     // }
     
 
+
     @PostMapping("/generateToken")
-    public ResponseEntity<Map<String, String>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        // Authentification de l'utilisateur
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
-        );
+    public ResponseEntity<Map<String, Object>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        try {
+            // Authentification de l'utilisateur
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+            );
 
-        if (!authentication.isAuthenticated()) {
-            throw new UsernameNotFoundException("Invalid user request!");
+            // Vérification si l'utilisateur est authentifié
+            if (authentication.isAuthenticated()) {
+                // Récupérer les détails de l'utilisateur
+                UserInfoDetails userDetails = (UserInfoDetails) authentication.getPrincipal(); // Assurez-vous que vous avez une classe UserInfoDetails
+                Long userId = userDetails.getId(); // Récupérer l'ID de l'utilisateur
+
+                // Utiliser `userDetails` pour générer le token
+                String token = jwtService.generateToken(userDetails);
+                System.out.println("Token généré : " + token);
+            
+                // Construire la réponse
+                Map<String, Object> response = new HashMap<>();
+                response.put("token", token);
+                response.put("username", userDetails.getUsername());
+                response.put("id", userId); // Ajoutez l'ID de l'utilisateur
+                response.put("isEnabled", userDetails.isEnabled()); // Assurez-vous que vous avez accès à cette méthode
+
+                return ResponseEntity.ok(response);
+            } else {
+                throw new UsernameNotFoundException("Invalid user request!");
+            }
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
         }
-
-        // Recherche de l'utilisateur par email
-        Optional<UserInfos> userOptional = userInfoService.findByEmail(authRequest.getEmail());
-        if (userOptional.isEmpty()) {
-            throw new UsernameNotFoundException("Utilisateur non trouvé dans la base.");
-        }
-
-        UserInfos user = userOptional.get();
-
-        // Vérification si l'utilisateur est activé
-        if (!user.isEnabled()) {
-            throw new UsernameNotFoundException("Utilisateur désactivé. Veuillez contacter l'administrateur.");
-        }
-
-        // Vérification du rôle de l'utilisateur
-        if (user.getRoles() != Roles.ROLE_ADMIN){
-            throw new UsernameNotFoundException("Seuls les administrateurs et les clients sont autorisés .");
-        }
-
-        // Génération du token JWT
-        String token = jwtService.generateToken(authRequest.getEmail());
-
-        // Réponse
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        response.put("username", user.getUsername());
-        response.put("isEnabled", String.valueOf(user.isEnabled()));
-
-
-        return ResponseEntity.ok(response);
     }
+
+    // @PostMapping("/generateToken")
+    // public ResponseEntity<Map<String, String>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    //     // Authentification de l'utilisateur
+    //     Authentication authentication = authenticationManager.authenticate(
+    //             new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+    //     );
+
+    //     if (!authentication.isAuthenticated()) {
+    //         throw new UsernameNotFoundException("Invalid user request!");
+    //     }
+
+    //     // Recherche de l'utilisateur par email
+    //     Optional<UserInfos> userOptional = userInfoService.findByEmail(authRequest.getEmail());
+    //     if (userOptional.isEmpty()) {
+    //         throw new UsernameNotFoundException("Utilisateur non trouvé dans la base.");
+    //     }
+
+    //     UserInfos user = userOptional.get();
+
+    //     // Vérification si l'utilisateur est activé
+    //     if (!user.isEnabled()) {
+    //         throw new UsernameNotFoundException("Utilisateur désactivé. Veuillez contacter l'administrateur.");
+    //     }
+
+    //     // Vérification du rôle de l'utilisateur
+    //     if (user.getRoles() != Roles.ROLE_ADMIN){
+    //         throw new UsernameNotFoundException("Seuls les administrateurs et les clients sont autorisés .");
+    //     }
+
+    //     // Génération du token JWT
+    //     String token = jwtService.generateToken(authRequest.getEmail());
+
+    //     // Réponse
+    //     Map<String, String> response = new HashMap<>();
+    //     response.put("token", token);
+    //     response.put("username", user.getUsername());
+    //     response.put("isEnabled", String.valueOf(user.isEnabled()));
+
+
+    //     return ResponseEntity.ok(response);
+    // }
 
 
 
     // Obtenir tous les utilisateurs
     @GetMapping
-    // @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<UserInfos>> getAllUsers() {
         List<UserInfos> users = userInfoService.getAllUsers();
         return ResponseEntity.ok(users);

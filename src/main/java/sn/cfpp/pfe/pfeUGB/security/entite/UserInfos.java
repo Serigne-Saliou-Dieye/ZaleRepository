@@ -1,5 +1,7 @@
 package sn.cfpp.pfe.pfeUGB.security.entite;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,6 +14,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +29,7 @@ import sn.cfpp.pfe.pfeUGB.model.Livreur;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfos {
+public class UserInfos  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,11 +57,17 @@ public class UserInfos {
 
    @JsonIgnore
    @OneToOne(mappedBy = "userClient", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+   @JoinColumn(name = "user_id", referencedColumnName = "id")
    private Client client;
 
    @JsonIgnore
    @OneToOne(mappedBy = "userLivreur", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
    private Livreur livreur;
+
+   public Client getClient() {
+    return client;
+}
+
 
 }
 

@@ -1,5 +1,6 @@
 package sn.cfpp.pfe.pfeUGB.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -27,7 +28,7 @@ public class Produit {
     // @JsonIgnore
     // @JsonManagedReference
     @ManyToMany(mappedBy = "produits")
-    private List<Commande> commandes;
+    private List<Commande> commandes = new ArrayList<>(); // Initialisation de la liste;
 
     public Produit() {
     }

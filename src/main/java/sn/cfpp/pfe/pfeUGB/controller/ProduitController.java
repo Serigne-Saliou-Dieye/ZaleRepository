@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.model.Produit;
 import sn.cfpp.pfe.pfeUGB.repositories.ProduitRepository;
+import sn.cfpp.pfe.pfeUGB.visualisations.service.ProduitService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
@@ -22,6 +23,8 @@ public class ProduitController {
     @Autowired
     private NotificationService notificationService;
 
+     @Autowired
+    private ProduitService produitService;
 
     @GetMapping("/count")
     public ResponseEntity<Long> getClientCount() {
@@ -31,8 +34,14 @@ public class ProduitController {
 
      //créer un nouveau client
      @PostMapping
-    public ResponseEntity<Produit> createProduit(@RequestBody Produit produit){
-        Produit savedProduit = produitRepository.save(produit);
+    public ResponseEntity<Produit> createProduit(@RequestBody Produit produit, @RequestParam Long clientId){
+         // Vérifiez que le produit n'est pas null
+        if (produit == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Produit savedProduit =  produitService.ajouterProduitAvecCommande(produit, clientId);
+        // produitRepository.save(produit);
         notificationService.sendNotification("Nouveau produit ajouté");
         return ResponseEntity.ok(savedProduit);
     }

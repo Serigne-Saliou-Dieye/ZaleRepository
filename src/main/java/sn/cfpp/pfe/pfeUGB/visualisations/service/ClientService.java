@@ -13,11 +13,28 @@ import org.springframework.stereotype.Service;
 
 import sn.cfpp.pfe.pfeUGB.model.Client;
 import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
+import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
+import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
 
 @Service
 public class ClientService {
      @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private UserInfoRepository userInfosRepository;
+
+
+    public Client createClient(Client client, Long userId) {
+        // Récupérer l'utilisateur connecté
+        UserInfos user = userInfosRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        // Associer l'utilisateur au client
+        client.setUserClient(user);
+
+        // Enregistrer le client
+        return clientRepository.save(client);
+    }
 
     public List<Map<String, Object>> getTop5MostActiveClients() {
         Pageable pageable = PageRequest.of(0, 5);

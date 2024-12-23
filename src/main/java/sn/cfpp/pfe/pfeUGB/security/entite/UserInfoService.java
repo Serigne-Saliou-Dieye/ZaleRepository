@@ -59,20 +59,35 @@ public class UserInfoService implements UserDetailsService {
             throw new UsernameNotFoundException("Utilisateur désactivé : " + username);
         }
 
-        // Conversion des rôles/permissions
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(userInfo.getRoles().name()));
-
-        // Retour d'un objet UserDetails
-        return new org.springframework.security.core.userdetails.User(
-                userInfo.getUsername(),
-                userInfo.getPassword(),
-                userInfo.isEnabled(),
-                true, // accountNonExpired
-                true, // credentialsNonExpired
-                true, // accountNonLocked
-                authorities
-        );
+        // Retourner une instance de UserInfoDetails
+        return new UserInfoDetails(userInfo); // Assurez-vous que vous retournez votre classe personnalisée
     }
+
+    // @Override
+    // public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    //     // Recherche de l'utilisateur par username
+    //     UserInfos userInfo = userInfoRepository.findByEmail(username)
+    //             .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable : " + username));
+
+    //     // Vérification si l'utilisateur est activé
+    //     if (!userInfo.isEnabled()) {
+    //         throw new UsernameNotFoundException("Utilisateur désactivé : " + username);
+    //     }
+
+    //     // Conversion des rôles/permissions
+    //     List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(userInfo.getRoles().name()));
+
+    //     // Retour d'un objet UserDetails
+    //     return new org.springframework.security.core.userdetails.User(
+    //             userInfo.getUsername(),
+    //             userInfo.getPassword(),
+    //             userInfo.isEnabled(),
+    //             true, // accountNonExpired
+    //             true, // credentialsNonExpired
+    //             true, // accountNonLocked
+    //             authorities
+    //     );
+    // }
 
     public ResponseEntity<UserInfos> addUser(UserInfos userInfo) {
         userInfo.setPassword(passwordEncoder.encode(userInfo.getPassword()));

@@ -2,6 +2,7 @@ package sn.cfpp.pfe.pfeUGB.model;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +60,9 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
                 joinColumns = @JoinColumn(name = "commande_id"),
                 inverseJoinColumns = @JoinColumn(name = "produit_id")
             )
-            private List<Produit> produits;
+            private List<Produit> produits = new ArrayList<>(); // Initialisation de la liste
+
+            
 
     public Commande() {
     }

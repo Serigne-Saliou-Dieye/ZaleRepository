@@ -78,7 +78,7 @@ public class PfeUgbApplication implements CommandLineRunner{
 		Client cl5 = new Client(null, "Ba", "44884433", "ba123", "ba@gmail.com", null, null, null, userInfo4);
 		Client cl6 = new Client(null, "Ball", "44884433", "ball123", "ball@gmail.com", null, null, null, userInfo6);
 		clientRepository.saveAll(Arrays.asList(cl1, cl2, cl3, cl4, cl5, cl6));
-		
+			
 	
 		// Enregistrer les livreurs
 		Livreur liv1 = new Livreur(null, "Moussa", "moussa@gmail.com", "8877665", "toyota", null, null, userInfo1);

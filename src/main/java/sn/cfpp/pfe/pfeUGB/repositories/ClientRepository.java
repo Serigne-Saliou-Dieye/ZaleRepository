@@ -23,4 +23,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Optional<Client> findByUserClient(UserInfos userClient);
 
+    Client findTopByOrderByIdClDesc();
+
 }

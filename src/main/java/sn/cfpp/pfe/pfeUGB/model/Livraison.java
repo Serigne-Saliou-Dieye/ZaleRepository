@@ -1,6 +1,10 @@
 package sn.cfpp.pfe.pfeUGB.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+
+import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 
 @Entity
@@ -51,6 +56,11 @@ public class Livraison {
         if (statutLivraison == StatutLivraison.LIVREE) {
             this.dateArrivee = LocalDateTime.now(); // Mettre la date d'arrivée si le statut est LIVREE
         }
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.dateDepart = LocalDateTime.now(); // Date du jour
     }
 
 

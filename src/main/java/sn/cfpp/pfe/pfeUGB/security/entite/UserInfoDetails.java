@@ -1,46 +1,40 @@
 package sn.cfpp.pfe.pfeUGB.security.entite;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserInfoDetails implements UserDetails {
 
+    private Long id;
     private String email;  // Utilisation de l'email au lieu de username
     private String password;
-    private List<SimpleGrantedAuthority> authorities;
-
-    @Autowired
-    private UserInfos userInfo;
-    @Autowired
-    private UserInfoRepository userInfoRepository;
-
+    private boolean enabled; // Ajoutez un champ pour l'état
+    private List<GrantedAuthority> authorities;
 
     public UserInfoDetails(UserInfos userInfo) {
-        // Assumer que 'email' dans UserInfo représente l'email de l'utilisateur
+        this.id = userInfo.getId(); // Assurez-vous que l'ID est récupéré
         this.email = userInfo.getEmail();  // 'username' devient 'email'
         this.password = userInfo.getPassword();
-    
+        this.enabled = userInfo.isEnabled(); // Initialisez l'état ici
+
         // Les rôles de l'utilisateur sont directement récupérés sous forme d'énumérations
         this.authorities = userInfo.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))  // Convertir chaque rôle en authority
                 .collect(Collectors.toList());
     }
-    
-    
 
-    @Override
-    public List<SimpleGrantedAuthority> getAuthorities() {
-        return authorities;
+    public Long getId() {
+        return id;
     }
 
+    @Override
+    public List<GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
 
     @Override
     public String getPassword() {
@@ -69,10 +63,6 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        
-        return userInfo.isEnabled(); // Retourne l'état depuis l'entité UserInfo
-
+        return enabled; // Retourne l'état depuis l'attribut
     }
-   
-    
 }

@@ -52,7 +52,7 @@ public class LivraisonController {
     @PostMapping
     public ResponseEntity<Livraison> createLivraison(@RequestBody Livraison livraison) {
         // Définir automatiquement la date selon le statut
-        if (livraison.getStatutLivraison() == StatutLivraison.EN_COURS) {
+        if (livraison.getStatutLivraison() == StatutLivraison.EN_ATTENTE) {
             livraison.setDateDepart(LocalDateTime.now());
         }
 
