@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import sn.cfpp.pfe.pfeUGB.model.Livraison;
-
+import sn.cfpp.pfe.pfeUGB.model.Livreur;
 import sn.cfpp.pfe.pfeUGB.repositories.LivraisonRepository;
+import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
 import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
+import sn.cfpp.pfe.pfeUGB.visualisations.service.LivreurService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
 @RestController
@@ -35,6 +37,10 @@ public class LivraisonController {
     private final LivraisonRepository livraisonRepository;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private LivreurService livreurService;
+    @Autowired
+    private LivreurRepository livreurRepository;
 
 
     @GetMapping("/count")
@@ -65,16 +71,7 @@ public class LivraisonController {
         // Retourner la réponse
         return ResponseEntity.ok(savedLivraison);
     }
-
-    // @PostMapping
-    // public Livraison createLivraison(@RequestBody Livraison livraison) {
-    //     // Définir automatiquement la date selon le statut
-    //     if (livraison.getStatutLivraison() == StatutLivraison.EN_COURS) {
-    //         livraison.setDateDepart(LocalDateTime.now());
-    //     }
-
-    //     return livraisonRepository.save(livraison);
-    // }
+    
 
     // Read (Lister toutes les commandes)
     @GetMapping
@@ -89,18 +86,28 @@ public class LivraisonController {
     }
 
     
-    @PutMapping("/{id}")
-    public Livraison updateLivraison(@PathVariable Long id, @RequestBody Livraison updateLivraison) {
-    return livraisonRepository.findById(id)
-        .map(livraison -> {
-            livraison.setDateArrivee(updateLivraison.getDateArrivee());
-            livraison.setDateDepart(updateLivraison.getDateDepart());
-            livraison.setStatutLivraison(updateLivraison.getStatutLivraison());
-            // Ajoutez d'autres champs si nécessaire
-            return livraisonRepository.save(livraison);
-        })
-        .orElseThrow(() -> new RuntimeException("Livraison non trouvé"));
-}
+    @PutMapping("/{livraisonId}/{livreurId}")
+    public ResponseEntity<Livraison> updateLivraison(@PathVariable Long livraisonId, @PathVariable Long livreurId, @RequestBody Livraison updateLivraison) {
+        return livraisonRepository.findById(livraisonId)
+            .map(livraison -> {
+                // Mettre à jour les champs de la livraison
+                livraison.setDateArrivee(updateLivraison.getDateArrivee());
+                livraison.setDateDepart(updateLivraison.getDateDepart());
+                livraison.setStatutLivraison(updateLivraison.getStatutLivraison());
+                // Ajoutez d'autres champs si nécessaire
+
+                // Récupérer le livreur par son ID
+                Livreur livreur = livreurRepository.findById(livreurId)
+                    .orElseThrow(() -> new RuntimeException("Livreur non trouvé"));
+
+                // Associer le livreur à la livraison
+                livraison.setLivreur(livreur);
+
+                // Enregistrer la livraison mise à jour
+                return ResponseEntity.ok(livraisonRepository.save(livraison));
+            })
+            .orElseThrow(() -> new RuntimeException("Livraison non trouvée"));
+    }
 
     
     // Delete (Supprimer une commande)

@@ -39,8 +39,8 @@ public class LivreurController {
 
     //créer un nouveau client
     @PostMapping
-    public ResponseEntity<Livreur> createLivreur(@RequestBody Livreur livreur){
-        Livreur savedLivreur = livreurRepository.save(livreur);
+    public ResponseEntity<Livreur> createLivreur(@RequestBody Livreur livreur, @RequestParam Long userId){
+        Livreur savedLivreur = livreurService.createLivreur(livreur, userId);
         notificationService.sendNotification("Nouveau livreur ajouté");
         return ResponseEntity.ok(savedLivreur);
     }
