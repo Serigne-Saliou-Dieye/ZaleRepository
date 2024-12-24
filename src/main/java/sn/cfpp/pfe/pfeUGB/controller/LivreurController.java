@@ -37,6 +37,14 @@ public class LivreurController {
         return ResponseEntity.ok(count);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Livreur> getLivreurByUserId(@PathVariable Long userId) {
+        Livreur livreur = livreurRepository.findByUserLivreur_Id(userId)
+            .orElseThrow(() -> new RuntimeException("Aucun livreur trouvé pour cet utilisateur"));
+        return ResponseEntity.ok(livreur);
+    }
+
+
     //créer un nouveau client
     @PostMapping
     public ResponseEntity<Livreur> createLivreur(@RequestBody Livreur livreur, @RequestParam Long userId){

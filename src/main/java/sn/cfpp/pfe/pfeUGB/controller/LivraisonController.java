@@ -87,27 +87,30 @@ public class LivraisonController {
 
     
     @PutMapping("/{livraisonId}/{livreurId}")
-    public ResponseEntity<Livraison> updateLivraison(@PathVariable Long livraisonId, @PathVariable Long livreurId, @RequestBody Livraison updateLivraison) {
+    public ResponseEntity<Livraison> updateLivraison(
+            @PathVariable Long livraisonId, 
+            @PathVariable Long livreurId, 
+            @RequestBody Livraison updateLivraison) {
         return livraisonRepository.findById(livraisonId)
             .map(livraison -> {
+                // Vérifiez que le livreur existe
+                Livreur livreur = livreurRepository.findById(livreurId)
+                    .orElseThrow(() -> new RuntimeException("Livreur non trouvé"));
+
                 // Mettre à jour les champs de la livraison
                 livraison.setDateArrivee(updateLivraison.getDateArrivee());
                 livraison.setDateDepart(updateLivraison.getDateDepart());
                 livraison.setStatutLivraison(updateLivraison.getStatutLivraison());
-                // Ajoutez d'autres champs si nécessaire
-
-                // Récupérer le livreur par son ID
-                Livreur livreur = livreurRepository.findById(livreurId)
-                    .orElseThrow(() -> new RuntimeException("Livreur non trouvé"));
-
-                // Associer le livreur à la livraison
+                
+                // Associer le livreur
                 livraison.setLivreur(livreur);
 
-                // Enregistrer la livraison mise à jour
+                // Enregistrer et retourner la réponse
                 return ResponseEntity.ok(livraisonRepository.save(livraison));
             })
             .orElseThrow(() -> new RuntimeException("Livraison non trouvée"));
     }
+
 
     
     // Delete (Supprimer une commande)
