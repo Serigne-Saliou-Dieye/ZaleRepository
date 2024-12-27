@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.naming.AuthenticationException;
 
@@ -92,6 +94,9 @@ public class UserController {
                 response.put("username", userDetails.getUsername());
                 response.put("id", userId); // Ajoutez l'ID de l'utilisateur
                 response.put("isEnabled", userDetails.isEnabled()); // Assurez-vous que vous avez accès à cette méthode
+                // Récupérer le rôle directement
+                response.put("role", userDetails.getRole()); // Ajouter le rôle à la réponse
+
 
                 return ResponseEntity.ok(response);
             } else {

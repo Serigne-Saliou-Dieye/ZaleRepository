@@ -1,5 +1,6 @@
 package sn.cfpp.pfe.pfeUGB.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import jakarta.persistence.EntityNotFoundException;
 import sn.cfpp.pfe.pfeUGB.model.Produit;
 import sn.cfpp.pfe.pfeUGB.repositories.ProduitRepository;
 import sn.cfpp.pfe.pfeUGB.visualisations.service.ProduitService;
@@ -46,10 +47,30 @@ public class ProduitController {
         return ResponseEntity.ok(savedProduit);
     }
 
-    // @PostMapping
-    // public Produit createProduit(@RequestBody Produit produit){
-    //     return produitRepository.save(produit);
-    // }
+
+    @GetMapping("/sans-livraison")
+    public List<Produit> getProduitsSansLivraison() {
+        return produitService.getProduitsSansLivraison();
+    }
+
+    @GetMapping("/sans-livraison-by-user")
+    public List<Produit> getProduitsSansLivraisonParUtilisateur(@RequestParam Long userId) {
+        return produitService.getProduitsSansLivraisonByUser(userId);
+    }
+
+    @GetMapping("/avec-livraison")
+    public ResponseEntity<List<Produit>> getProduitsAvecLivraisonByUser(@RequestParam Long userId) {
+        try {
+            List<Produit> produits = produitService.getProduitsAvecLivraisonByUser(userId);
+            return ResponseEntity.ok(produits);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 
     //obtenir la liste des clients 
     @GetMapping

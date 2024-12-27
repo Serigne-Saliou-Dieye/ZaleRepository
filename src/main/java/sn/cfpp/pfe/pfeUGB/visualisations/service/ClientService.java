@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +49,10 @@ public class ClientService {
             topClients.add(clientData);
         }
         return topClients;
+    }
+
+    public Optional<Client> getClientUserById(Long userId) {
+        return clientRepository.findByUserClientId(userId);
     }
 
 }

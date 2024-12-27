@@ -28,6 +28,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
+import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 
     @Entity
     public class Commande {
@@ -62,9 +63,35 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
             )
             private List<Produit> produits = new ArrayList<>(); // Initialisation de la liste
 
+
+           
             
 
     public Commande() {
+    }
+
+     // Synchronise le statut de la livraison en fonction du statut de la commande
+    public void synchroniserStatutLivraison() {
+        if (livraison == null) {
+            return; // Pas de livraison associée, rien à synchroniser
+        }
+
+        switch (this.statutCmd) {
+            case ANNULEE:
+                livraison.setStatutLivraison(StatutLivraison.ANNULEE);
+                break;
+            case EN_ATTENTE:
+                livraison.setStatutLivraison(StatutLivraison.EN_ATTENTE);
+                break;
+            case TRAITEE:
+                livraison.setStatutLivraison(StatutLivraison.EN_COURS);
+                break;
+            case LIVREE:
+                livraison.setStatutLivraison(StatutLivraison.LIVREE);
+                break;
+            default:
+                throw new IllegalArgumentException("Statut commande inconnu : " + this.statutCmd);
+        }
     }
 
     // Constructeur sans la date, car elle est définie par défaut

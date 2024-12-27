@@ -29,6 +29,7 @@ import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
 import sn.cfpp.pfe.pfeUGB.repositories.CommandeRepository;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 import sn.cfpp.pfe.pfeUGB.security.repository.UserInfoRepository;
+import sn.cfpp.pfe.pfeUGB.statut.StatutCommande;
 import sn.cfpp.pfe.pfeUGB.visualisations.dto.MonthlyOrdersDTO;
 import sn.cfpp.pfe.pfeUGB.visualisations.dto.OrderStatusStatsDTO;
 import sn.cfpp.pfe.pfeUGB.visualisations.service.CommandeService;
@@ -146,6 +147,7 @@ public class CommandeController {
 
     
     // Update (Modifier une commande existante)
+
     @PutMapping("/{id}")
     public Commande updateCommande(@PathVariable Long id, @RequestBody Commande updateCommande){
         return commandeRepository.findById(id)

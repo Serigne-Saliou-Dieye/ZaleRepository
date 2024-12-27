@@ -97,6 +97,22 @@ public class ClientController {
         return clientRepository.findById(id);
     }
 
+    /**
+     * Vérifie si l'utilisateur est associé à un client.
+     *
+     * @param userId L'ID de l'utilisateur à vérifier.
+     * @return Une réponse contenant le client ou un statut 404 si non trouvé.
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getClientByUserInfoId(@PathVariable Long userId) {
+        Optional<Client> client = clientService.getClientUserById(userId);
+        if (client.isPresent()) {
+            return ResponseEntity.ok(client.get());
+        } else {
+            return ResponseEntity.ok("Veuillez vérifier vos informations personnelles.");
+        }
+    }
+
     //modifier un client 
     @PutMapping("/{id}")
     public Client updateClient(@PathVariable Long id, @RequestBody Client updateClient){

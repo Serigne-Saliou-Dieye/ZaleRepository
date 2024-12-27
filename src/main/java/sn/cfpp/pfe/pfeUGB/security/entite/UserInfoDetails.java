@@ -13,6 +13,8 @@ public class UserInfoDetails implements UserDetails {
     private String email;  // Utilisation de l'email au lieu de username
     private String password;
     private boolean enabled; // Ajoutez un champ pour l'état
+    private String role; 
+    private String username;
     private List<GrantedAuthority> authorities;
 
     public UserInfoDetails(UserInfos userInfo) {
@@ -20,6 +22,9 @@ public class UserInfoDetails implements UserDetails {
         this.email = userInfo.getEmail();  // 'username' devient 'email'
         this.password = userInfo.getPassword();
         this.enabled = userInfo.isEnabled(); // Initialisez l'état ici
+        this.username = userInfo.getUsername();
+        this.role = userInfo.getRoles().name();
+
 
         // Les rôles de l'utilisateur sont directement récupérés sous forme d'énumérations
         this.authorities = userInfo.getRoles().stream()
@@ -30,6 +35,12 @@ public class UserInfoDetails implements UserDetails {
     public Long getId() {
         return id;
     }
+
+     // Ajoutez un getter pour le rôle
+     public String getRole() {
+        return role;
+    }
+
 
     @Override
     public List<GrantedAuthority> getAuthorities() {
@@ -43,7 +54,7 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;  // Retourner l'email comme 'username'
+        return username;  // Retourner l'email comme 'username'
     }
 
     @Override

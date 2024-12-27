@@ -84,6 +84,8 @@ public class Produit {
     public void setCommandes(List<Commande> commandes) {
         this.commandes = commandes;
     }
+
+   
     
 
 }

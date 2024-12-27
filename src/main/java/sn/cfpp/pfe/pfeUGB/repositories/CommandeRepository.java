@@ -28,6 +28,12 @@ public interface CommandeRepository extends JpaRepository<Commande, Long>{
        "FROM Commande c " +
        "GROUP BY c.statutCmd")
     List<OrderStatusStatsDTO> getOrderStatusStats();
-;
+
+
+    @Query("SELECT c FROM Commande c WHERE c.livraison IS NULL")
+    List<Commande> findAllWithoutLivraison();
+
+   List<Commande> findByClientIdCl(Long idCl);
+
 
 }
