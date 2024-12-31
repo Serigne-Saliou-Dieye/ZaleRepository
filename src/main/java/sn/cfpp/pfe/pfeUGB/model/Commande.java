@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.type.LogicalType;
@@ -46,6 +47,7 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
             private Client client; 
 
             @OneToOne(mappedBy = "commande", cascade = CascadeType.ALL)
+            // @JsonBackReference // Indique que c'est la partie "arrière" de la relation
             private Livraison livraison;
 
             @JsonIgnore
@@ -64,35 +66,9 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
             private List<Produit> produits = new ArrayList<>(); // Initialisation de la liste
 
 
-           
-            
-
     public Commande() {
     }
-
-     // Synchronise le statut de la livraison en fonction du statut de la commande
-    public void synchroniserStatutLivraison() {
-        if (livraison == null) {
-            return; // Pas de livraison associée, rien à synchroniser
-        }
-
-        switch (this.statutCmd) {
-            case ANNULEE:
-                livraison.setStatutLivraison(StatutLivraison.ANNULEE);
-                break;
-            case EN_ATTENTE:
-                livraison.setStatutLivraison(StatutLivraison.EN_ATTENTE);
-                break;
-            case TRAITEE:
-                livraison.setStatutLivraison(StatutLivraison.EN_COURS);
-                break;
-            case LIVREE:
-                livraison.setStatutLivraison(StatutLivraison.LIVREE);
-                break;
-            default:
-                throw new IllegalArgumentException("Statut commande inconnu : " + this.statutCmd);
-        }
-    }
+    
 
     // Constructeur sans la date, car elle est définie par défaut
     public Commande(StatutCommande statut, Client client) {
@@ -127,8 +103,33 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
         return this.statutCmd;
     }
 
+    private boolean isUpdatingStatus = false;
+
     public void setStatutCmd(StatutCommande statutCmd) {
+        if (this.isUpdatingStatus) {
+            return; // Empêche les mises à jour infinies
+        }
         this.statutCmd = statutCmd;
+
+        // Synchroniser le statut de la livraison si elle existe
+        // if (this.livraison != null) {
+        //     switch (statutCmd) {
+        //         case EN_ATTENTE:
+        //             livraison.setStatutLivraison(StatutLivraison.EN_ATTENTE);
+        //             break;
+        //         case TRAITEE:
+        //             livraison.setStatutLivraison(StatutLivraison.EN_COURS);
+        //             break;
+        //         case LIVREE:
+        //             livraison.setStatutLivraison(StatutLivraison.LIVREE);
+        //             break;
+        //         case ANNULEE:
+        //             livraison.setStatutLivraison(StatutLivraison.ANNULEE);
+        //             break;
+        //         default:
+        //             throw new IllegalArgumentException("StatutCommande inconnu : " + statutCmd);
+        //     }
+        // }
     }
 
 
@@ -154,7 +155,26 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 
     public void setLivraison(Livraison livraison) {
         this.livraison = livraison;
-        // livraison.setCommande(this);
+
+        // Synchroniser le statut de la commande avec celui de la livraison
+        // if (livraison != null) {
+        //     switch (livraison.getStatutLivraison()) {
+        //         case EN_ATTENTE:
+        //             this.statutCmd = StatutCommande.EN_ATTENTE;
+        //             break;
+        //         case EN_COURS:
+        //             this.statutCmd = StatutCommande.TRAITEE;
+        //             break;
+        //         case LIVREE:
+        //             this.statutCmd = StatutCommande.LIVREE;
+        //             break;
+        //         case ANNULEE:
+        //             this.statutCmd = StatutCommande.ANNULEE;
+        //             break;
+        //         default:
+        //             throw new IllegalArgumentException("StatutLivraison inconnu : " + livraison.getStatutLivraison());
+        //     }
+        // }
     }
 
 

@@ -71,12 +71,12 @@ public class PfeUgbApplication implements CommandLineRunner{
 
 		
 		// Enregistrer des clients
-		Client cl1 = new Client(null, "Demba", "44334433", "demba12", "demba@gmail.com", null, null, null, userInfo1);
-		Client cl2 = new Client(null, "Saliou", "44884433", "samba14", "saliou@gmail.com", null, null, null, userInfo2);
-		Client cl3 = new Client(null, "Aw", "44884433", "aw12", "aw@gmail.com", null, null, null, userInfo5);
-		Client cl4 = new Client(null, "Teuw", "44884433", "teuw14", "teuw@gmail.com", null, null, null, userInfo3);
-		Client cl5 = new Client(null, "Ba", "44884433", "ba123", "ba@gmail.com", null, null, null, userInfo4);
-		Client cl6 = new Client(null, "Ball", "44884433", "ball123", "ball@gmail.com", null, null, null, userInfo6);
+		Client cl1 = new Client(null, "Demba", "44334433", "demba12", "demba@gmail.com", null, null, null, null, null, userInfo1);
+		Client cl2 = new Client(null, "Saliou", "44884433", "samba14", "saliou@gmail.com", null, null, null, null, null, userInfo2);
+		Client cl3 = new Client(null, "Aw", "44884433", "aw12", "aw@gmail.com", null, null, null, null, null, userInfo5);
+		Client cl4 = new Client(null, "Teuw", "44884433", "teuw14", "teuw@gmail.com", null, null, null, null, null, userInfo3);
+		Client cl5 = new Client(null, "Ba", "44884433", "ba123", "ba@gmail.com", null, null, null, null, null, userInfo4);
+		Client cl6 = new Client(null, "Ball", "44884433", "ball123", "ball@gmail.com", null, null, null, null, null, userInfo6);
 		clientRepository.saveAll(Arrays.asList(cl1, cl2, cl3, cl4, cl5, cl6));
 			
 	
@@ -91,12 +91,12 @@ public class PfeUgbApplication implements CommandLineRunner{
 		Commande com1 = new Commande(StatutCommande.ANNULEE, cl1);
 		Commande com2 = new Commande(StatutCommande.ANNULEE, cl5);
 		Commande com3 = new Commande(StatutCommande.EN_ATTENTE, cl2);
-		Commande com4 = new Commande(StatutCommande.EN_ATTENTE, cl3);
-		Commande com5 = new Commande(StatutCommande.LIVREE, cl1);
+		Commande com4 = new Commande(StatutCommande.TRAITEE, cl3);
+		Commande com5 = new Commande(StatutCommande.EN_ATTENTE, cl1);
 		Commande com6 = new Commande(StatutCommande.EN_ATTENTE, cl3);
-		Commande com7 = new Commande(StatutCommande.TRAITEE, cl5);
-		Commande com8 = new Commande(StatutCommande.TRAITEE, cl6);
-		Commande com9 = new Commande(StatutCommande.TRAITEE, cl4);
+		Commande com7 = new Commande(StatutCommande.EN_ATTENTE, cl5);
+		Commande com8 = new Commande(StatutCommande.EN_ATTENTE, cl6);
+		Commande com9 = new Commande(StatutCommande.EN_ATTENTE, cl4);
 		com1.setProduits(produits);
 		com2.setProduits(produits);
 		com3.setProduits(produits);
@@ -110,10 +110,10 @@ public class PfeUgbApplication implements CommandLineRunner{
 	
 		
 		// Enregistrer les livraisons et les associer aux commandes
-		Livraison livraison1 = new Livraison(StatutLivraison.EN_COURS, liv1);
-		Livraison livraison2 = new Livraison(StatutLivraison.LIVREE, liv2);
-		Livraison livraison3 = new Livraison(StatutLivraison.LIVREE, liv3);
-		Livraison livraison4 = new Livraison(StatutLivraison.LIVREE, liv4);
+		Livraison livraison1 = new Livraison(StatutLivraison.ANNULEE, liv1);
+		Livraison livraison2 = new Livraison(StatutLivraison.ANNULEE, liv2);
+		Livraison livraison3 = new Livraison(StatutLivraison.EN_ATTENTE, liv3);
+		Livraison livraison4 = new Livraison(StatutLivraison.EN_COURS, liv4);
 		livraison1.setCommande(com1);
 		livraison2.setCommande(com2);
 		livraison3.setCommande(com3);

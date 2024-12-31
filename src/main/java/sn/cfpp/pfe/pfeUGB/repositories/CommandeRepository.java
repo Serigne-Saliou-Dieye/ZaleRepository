@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import sn.cfpp.pfe.pfeUGB.model.Commande;
+import sn.cfpp.pfe.pfeUGB.model.Produit;
+import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 import sn.cfpp.pfe.pfeUGB.visualisations.dto.MonthlyOrdersDTO;
 import sn.cfpp.pfe.pfeUGB.visualisations.dto.OrderStatusStatsDTO;
 
@@ -34,6 +37,9 @@ public interface CommandeRepository extends JpaRepository<Commande, Long>{
     List<Commande> findAllWithoutLivraison();
 
    List<Commande> findByClientIdCl(Long idCl);
+   
+
+   List<Commande> findAllById(Iterable<Long> ids); // Méthode pour récupérer les commandes par leurs IDs
 
 
 }

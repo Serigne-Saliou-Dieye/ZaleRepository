@@ -25,6 +25,8 @@ public class Client{
         @Email(message = "Email should be valid")
         private String emailCl;
         private String imageCl;
+        private Double latitude;
+        private Double longitude;
         @JsonIgnore
         @OneToMany(mappedBy = "client")
         private List<Commande> commandes;
@@ -34,7 +36,7 @@ public class Client{
         private List<Notifications> notification;
 
         @OneToOne
-        @JoinColumn(name = "user_id", referencedColumnName = "id")
+        @JoinColumn(name = "user_id", referencedColumnName = "id")  
         private UserInfos userClient;
 
 

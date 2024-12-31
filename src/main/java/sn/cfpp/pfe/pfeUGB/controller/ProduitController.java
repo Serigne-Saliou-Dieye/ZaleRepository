@@ -7,11 +7,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.persistence.EntityNotFoundException;
 import sn.cfpp.pfe.pfeUGB.model.Produit;
 import sn.cfpp.pfe.pfeUGB.repositories.ProduitRepository;
+import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 import sn.cfpp.pfe.pfeUGB.visualisations.service.ProduitService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
@@ -69,7 +71,6 @@ public class ProduitController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
 
     //obtenir la liste des clients 

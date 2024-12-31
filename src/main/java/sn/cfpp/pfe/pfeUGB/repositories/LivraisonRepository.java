@@ -15,4 +15,10 @@ public interface LivraisonRepository extends JpaRepository<Livraison, Long> {
     List<Livraison> findByDateDepart(LocalDateTime dateDepart);   // Nom corrigé
     List<Livraison> findByStatutLivraison(StatutLivraison statutLivraison);
 
+    List<Livraison> findByLivreur_IdLivreur(Long livreurId); // Méthode pour récupérer les livraisons par ID de livreur
+
+    List<Livraison> findByLivreur_IdLivreurAndStatutLivraison(Long livreurId, StatutLivraison statutLivraison);
+
+
+
 }

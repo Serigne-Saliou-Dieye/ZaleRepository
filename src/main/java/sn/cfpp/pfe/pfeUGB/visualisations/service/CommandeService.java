@@ -39,23 +39,23 @@ public class CommandeService {
         return commandeRepository.getOrderStatusStats();
     }
 
-    public Commande mettreAJourStatutCommande(Long idCommande, StatutCommande nouveauStatut) {
-        Commande commande = commandeRepository.findById(idCommande)
-            .orElseThrow(() -> new EntityNotFoundException("Commande non trouvée avec l'ID : " + idCommande));
+    // public Commande mettreAJourStatutCommande(Long idCommande, StatutCommande nouveauStatut) {
+    //     Commande commande = commandeRepository.findById(idCommande)
+    //         .orElseThrow(() -> new EntityNotFoundException("Commande non trouvée avec l'ID : " + idCommande));
         
-        // Mise à jour du statut de la commande
-        commande.setStatutCmd(nouveauStatut);
+    //     // Mise à jour du statut de la commande
+    //     commande.setStatutCmd(nouveauStatut);
         
-        // Synchronisation du statut de la livraison
-        commande.synchroniserStatutLivraison();
+    //     // Synchronisation du statut de la livraison
+    //     commande.synchroniserStatutLivraison();
         
-        // Sauvegarder la commande et la livraison (si modifiée)
-        if (commande.getLivraison() != null) {
-            livraisonRepository.save(commande.getLivraison());  // Sauvegarde de la livraison si elle a été modifiée
-        }
+    //     // Sauvegarder la commande et la livraison (si modifiée)
+    //     if (commande.getLivraison() != null) {
+    //         livraisonRepository.save(commande.getLivraison());  // Sauvegarde de la livraison si elle a été modifiée
+    //     }
         
-        // Sauvegarder la commande
-        return commandeRepository.save(commande);
-    }
+    //     // Sauvegarder la commande
+    //     return commandeRepository.save(commande);
+    // }
 
 }

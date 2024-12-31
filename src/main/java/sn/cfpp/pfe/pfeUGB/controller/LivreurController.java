@@ -38,11 +38,19 @@ public class LivreurController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Livreur> getLivreurByUserId(@PathVariable Long userId) {
-        Livreur livreur = livreurRepository.findByUserLivreur_Id(userId)
-            .orElseThrow(() -> new RuntimeException("Aucun livreur trouvé pour cet utilisateur"));
-        return ResponseEntity.ok(livreur);
+    public ResponseEntity<?> getLivreurByUserId(@PathVariable Long userId) {
+        if (userId == null || userId <= 0) {
+            return ResponseEntity.badRequest().body("L'ID utilisateur fourni est invalide.");
+        }
+
+        Optional<Livreur> livreurOpt = livreurRepository.findByUserLivreur_Id(userId);
+        if (livreurOpt.isPresent()) {
+            return ResponseEntity.ok(livreurOpt.get());
+        } else {
+            return ResponseEntity.ok("Aucun livreur trouvé pour cet utilisateur.");
+        }
     }
+
 
 
     //créer un nouveau client
@@ -69,6 +77,7 @@ public class LivreurController {
     public Optional<Livreur> getLivreurById(@PathVariable Long id){
         return livreurRepository.findById(id);
     }
+   
 
     //modifier un client 
     @PutMapping("/{id}")

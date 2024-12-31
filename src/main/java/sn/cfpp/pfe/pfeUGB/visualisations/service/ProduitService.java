@@ -130,24 +130,22 @@ public class ProduitService {
     
         // Récupérer les commandes associées au client
         List<Commande> commandesClient = commandeRepository.findByClientIdCl(client.getIdCl());
-    
-        // Filtrer les commandes avec une livraison en cours ou en attente
-        List<Commande> commandesAvecLivraisonValide = commandesClient.stream()
-            .filter(commande -> commande.getLivraison() != null) // Vérifie que la commande est associée à une livraison
-            .filter(commande -> commande.getLivraison().getStatutLivraison().equals(StatutLivraison.EN_COURS) 
-                            //  || commande.getLivraison().getStatutLivraison().equals(StatutLivraison.EN_ATTENTE)
-                             ) // Vérifie le statut
-            .collect(Collectors.toList());
+        
+       // Filtrer les commandes avec un statut TRAITEE
+        List<Commande> commandesTraitees = commandesClient.stream()
+        .filter(commande -> commande.getStatutCmd() != null) // Vérifie que la commande a un statut
+        .filter(commande -> commande.getStatutCmd().equals(StatutCommande.TRAITEE)) // Vérifie le statut
+        .collect(Collectors.toList());
+
     
         // Extraire les produits des commandes valides
-        Set<Produit> produitsAvecLivraisonValide = commandesAvecLivraisonValide.stream()
+        Set<Produit> produitsAvecLivraisonValide = commandesTraitees.stream()
             .flatMap(commande -> commande.getProduits().stream()) // Récupère les produits de chaque commande
             .collect(Collectors.toSet());
     
         // Retourner les produits sous forme de liste
         return new ArrayList<>(produitsAvecLivraisonValide);
     }
-    
 
 
 }

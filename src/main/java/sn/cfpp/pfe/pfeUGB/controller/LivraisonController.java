@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import sn.cfpp.pfe.pfeUGB.model.Livraison;
 import sn.cfpp.pfe.pfeUGB.model.Livreur;
+import sn.cfpp.pfe.pfeUGB.model.Produit;
 import sn.cfpp.pfe.pfeUGB.repositories.LivraisonRepository;
 import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
 import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
+import sn.cfpp.pfe.pfeUGB.visualisations.service.LivraisonService;
 import sn.cfpp.pfe.pfeUGB.visualisations.service.LivreurService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
@@ -41,6 +43,8 @@ public class LivraisonController {
     private LivreurService livreurService;
     @Autowired
     private LivreurRepository livreurRepository;
+    @Autowired
+    private LivraisonService livraisonService;
 
 
     @GetMapping("/count")
@@ -71,6 +75,15 @@ public class LivraisonController {
         // Retourner la réponse
         return ResponseEntity.ok(savedLivraison);
     }
+
+    // Endpoint pour récupérer les livraisons associées à l'utilisateur connecté
+    @GetMapping("/user/{userId}")
+    public List<Produit> getProduitsByUserId(@PathVariable Long userId) {
+        return livraisonService.getProduitsByConnectedUser (userId);
+    }
+    // public List<Livraison> getLivraisonsByUserId(@PathVariable Long userId) {
+    //     return livraisonService.getLivraisonsByConnectedUser (userId);
+    // }
     
 
     // Read (Lister toutes les commandes)
@@ -137,4 +150,6 @@ public class LivraisonController {
     public List<Livraison> getLivraisonByStatut(@PathVariable StatutLivraison statutLivraison) {
         return livraisonRepository.findByStatutLivraison(statutLivraison);
     }  
+
+    
 }
