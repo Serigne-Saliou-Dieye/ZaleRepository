@@ -81,10 +81,10 @@ public class PfeUgbApplication implements CommandLineRunner{
 			
 	
 		// Enregistrer les livreurs
-		Livreur liv1 = new Livreur(null, "Moussa", "moussa@gmail.com", "8877665", "toyota", null, null, userInfo1);
-		Livreur liv2 = new Livreur(null, "aly", "aly@gmail.com", "33221165", "helux", null, null, userInfo2);
-		Livreur liv3 = new Livreur(null, "seck", "seck@gmail.com", "33221165", "helux", null, null, userInfo3);
-		Livreur liv4 = new Livreur(null, "sall", "sall@gmail.com", "33221165", "helux", null, null, userInfo4);
+		Livreur liv1 = new Livreur(null, "Moussa", "moussa@gmail.com", "8877665", "toyota", null, null, null, null, userInfo1);
+		Livreur liv2 = new Livreur(null, "aly", "aly@gmail.com", "33221165", "helux", null, null, null, null, userInfo2);
+		Livreur liv3 = new Livreur(null, "seck", "seck@gmail.com", "33221165", "helux", null, null, null, null, userInfo3);
+		Livreur liv4 = new Livreur(null, "sall", "sall@gmail.com", "33221165", "helux", null, 18.0798983, -15.99848, null, userInfo4);
 		livreurRepository.saveAll(Arrays.asList(liv1, liv2, liv3, liv4));
 	
 		// Enregistrer les commandes avec les produits associés

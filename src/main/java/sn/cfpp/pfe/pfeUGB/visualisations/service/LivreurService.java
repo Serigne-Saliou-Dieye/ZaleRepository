@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -12,8 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import sn.cfpp.pfe.pfeUGB.model.Client;
+import sn.cfpp.pfe.pfeUGB.model.Commande;
 import sn.cfpp.pfe.pfeUGB.model.Livraison;
 import sn.cfpp.pfe.pfeUGB.model.Livreur;
+import sn.cfpp.pfe.pfeUGB.repositories.ClientRepository;
+import sn.cfpp.pfe.pfeUGB.repositories.CommandeRepository;
 import sn.cfpp.pfe.pfeUGB.repositories.LivraisonRepository;
 import sn.cfpp.pfe.pfeUGB.repositories.LivreurRepository;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
@@ -29,6 +34,11 @@ public class LivreurService {
     private UserInfoRepository userInfoRepository;
     @Autowired
     private LivraisonRepository livraisonRepository;
+    @Autowired
+    private ClientRepository clientRepository; 
+
+    @Autowired
+    private CommandeRepository commandeRepository;
 
     public Livreur createLivreur(Livreur livreur, Long userId) {
         // Récupérer l'utilisateur connecté
@@ -77,5 +87,34 @@ public class LivreurService {
         return topLivreurs;
     }
    
+    public List<Livreur> getLivreursByConnectedUserLivreur(Long userId) {
+        // Récupérer le client associé à l'utilisateur connecté
+        Optional<Client> clientOptional = clientRepository.findByUserClient_Id(userId);
+    
+        // Vérifiez si le client est présent
+        if (!clientOptional.isPresent()) {
+            return List.of(); // Retourner une liste vide si aucun client n'est trouvé
+        }
+    
+        // Récupérer le client
+        Client client = clientOptional.get();
+    
+        // Récupérer les commandes associées à ce client
+        List<Commande> commandes = commandeRepository.findByClient_IdCl(client.getIdCl());
+    
+        // Récupérer les livreurs associés aux livraisons des commandes avec le statut "EN_COURS"
+        return commandes.stream()
+            .flatMap(commande -> {
+                // Vérifier si la livraison existe
+                Livraison livraison = commande.getLivraison(); // Assurez-vous que getLivraison() est une méthode de Commande
+                if (livraison != null && livraison.getStatutLivraison() == StatutLivraison.EN_COURS) {
+                    return Stream.of(livraison.getLivreur()); // Récupérer le livreur associé à la livraison
+                }
+                return Stream.empty(); // Retourner un stream vide si la livraison n'est pas en cours
+            })
+            .filter(livreur -> livreur != null) // Filtrer les livreurs null
+            .distinct() // Éliminer les doublons
+            .collect(Collectors.toList()); // Retourner la liste des livreurs
+    }
 
 }

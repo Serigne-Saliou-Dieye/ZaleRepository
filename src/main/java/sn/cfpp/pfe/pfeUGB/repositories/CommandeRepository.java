@@ -41,5 +41,7 @@ public interface CommandeRepository extends JpaRepository<Commande, Long>{
 
    List<Commande> findAllById(Iterable<Long> ids); // Méthode pour récupérer les commandes par leurs IDs
 
+List<Commande> findByClient_IdCl(Long idCl);
+
 
 }

@@ -1,5 +1,7 @@
 package sn.cfpp.pfe.pfeUGB.security.entite;
 
+import java.util.Objects;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,6 +23,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import sn.cfpp.pfe.pfeUGB.model.Client;
 import sn.cfpp.pfe.pfeUGB.model.Livreur;
@@ -29,6 +32,8 @@ import sn.cfpp.pfe.pfeUGB.model.Livreur;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+// @EqualsAndHashCode(exclude = "client") // Exclure client pour éviter la récursion
+
 public class UserInfos  {
 
     @Id
@@ -66,7 +71,20 @@ public class UserInfos  {
 
    public Client getClient() {
     return client;
-}
+   }
+
+   @Override
+   public boolean equals(Object o) {
+       if (this == o) return true;
+       if (!(o instanceof UserInfos)) return false;
+       UserInfos userInfos = (UserInfos) o;
+       return Objects.equals(id, userInfos.id);
+   }
+
+   @Override
+   public int hashCode() {
+       return Objects.hash(id);
+   }
 
 
 }

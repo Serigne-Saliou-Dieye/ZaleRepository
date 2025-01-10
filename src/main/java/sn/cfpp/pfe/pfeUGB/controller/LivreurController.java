@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import sn.cfpp.pfe.pfeUGB.model.Client;
@@ -30,6 +31,9 @@ public class LivreurController {
     @Autowired
     private LivreurService livreurService;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
 
     @GetMapping("/count")
     public ResponseEntity<Long> getClientCount() {
@@ -50,6 +54,38 @@ public class LivreurController {
             return ResponseEntity.ok("Aucun livreur trouvé pour cet utilisateur.");
         }
     }
+
+
+    @GetMapping("/en-cours/{userId}")
+    public ResponseEntity<List<Livreur>> getLivreursEnCours(@PathVariable Long userId) {
+        List<Livreur> livreurs = livreurService.getLivreursByConnectedUserLivreur(userId);
+
+        if (livreurs.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Retourne un code 204 si aucun livreur n'est trouvé
+        }
+
+        return ResponseEntity.ok(livreurs); // Retourne un code 200 avec la liste des livreurs
+    }
+
+
+    @PutMapping("/update-location/{livreurId}")
+    public ResponseEntity<Void> updateLocation(@PathVariable Long livreurId, @RequestBody Map<String, Double> coords) {
+        Optional<Livreur> livreurOpt = livreurRepository.findById(livreurId);
+        if (livreurOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Livreur livreur = livreurOpt.get();
+        livreur.setLatitude(coords.get("latitude"));
+        livreur.setLongitude(coords.get("longitude"));
+        livreurRepository.save(livreur);
+
+        // Diffuser la position uniquement au client lié à ce livreur
+        messagingTemplate.convertAndSend("/topic/locations/" + livreurId, livreur);
+
+        return ResponseEntity.ok().build();
+    }
+
 
 
 

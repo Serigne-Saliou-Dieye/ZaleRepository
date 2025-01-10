@@ -1,5 +1,6 @@
 package sn.cfpp.pfe.pfeUGB.model;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 
@@ -15,6 +17,7 @@ import sn.cfpp.pfe.pfeUGB.security.entite.UserInfos;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+// @EqualsAndHashCode(exclude = "userClient") // Exclure userClient pour éviter la récursion
 public class Client{
 
         @Id
@@ -38,6 +41,19 @@ public class Client{
         @OneToOne
         @JoinColumn(name = "user_id", referencedColumnName = "id")  
         private UserInfos userClient;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Client)) return false;
+            Client client = (Client) o;
+            return Objects.equals(idCl, client.idCl);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(idCl);
+        }
 
 
     // public Client() {}

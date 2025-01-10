@@ -34,6 +34,8 @@ public class Livreur {
     private String emailLiv;
     private String telephoneLiv;
     private String vehiculeLiv, imageLiv;
+    private Double latitude;
+    private Double longitude;
      
     @JsonIgnore
     @OneToMany(mappedBy ="livreur", cascade = CascadeType.ALL)

@@ -42,7 +42,7 @@ public class Livraison {
     @JoinColumn(name = "commande_id" , referencedColumnName = "idCmd")
     private Commande commande;  
 
-    @JsonIgnore
+    // @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "livreur_id")
     private Livreur livreur;

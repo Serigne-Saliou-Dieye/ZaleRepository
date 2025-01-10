@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Endpoint pour établir la connexion
         registry.addEndpoint("/ws-notifications")
-        .setAllowedOrigins("http://localhost:3000") // Ajoutez l'URL de votre client React
+        .setAllowedOrigins("http://localhost:3000", "http://192.168.43.86:8081") // Ajoutez l'URL de votre client React Js
         .withSockJS();
     }
 
