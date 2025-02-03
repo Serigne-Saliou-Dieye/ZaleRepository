@@ -66,6 +66,16 @@ public class LivreurController {
 
         return ResponseEntity.ok(livreurs); // Retourne un code 200 avec la liste des livreurs
     }
+    @GetMapping("/statutLivraison/en-cours")
+    public ResponseEntity<List<Livreur>> getLivreursStatutLivraisonEnCours() {
+        List<Livreur> livreurs = livreurService.getLivreursAvecStatusLivraisonEncours();
+
+        if (livreurs.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Retourne un code 204 si aucun livreur n'est trouvé
+        }
+
+        return ResponseEntity.ok(livreurs); // Retourne un code 200 avec la liste des livreurs
+    }
 
 
     @PutMapping("/update-location/{livreurId}")

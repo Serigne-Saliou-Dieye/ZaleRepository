@@ -81,14 +81,14 @@ public class PfeUgbApplication implements CommandLineRunner{
 			
 	
 		// Enregistrer les livreurs
-		Livreur liv1 = new Livreur(null, "Moussa", "moussa@gmail.com", "8877665", "toyota", null, null, null, null, userInfo1);
+		Livreur liv1 = new Livreur(null, "Moussa", "moussa@gmail.com", "8877665", "toyota", null, 16.064805	, -16.423845, null, userInfo1);
 		Livreur liv2 = new Livreur(null, "aly", "aly@gmail.com", "33221165", "helux", null, null, null, null, userInfo2);
 		Livreur liv3 = new Livreur(null, "seck", "seck@gmail.com", "33221165", "helux", null, null, null, null, userInfo3);
 		Livreur liv4 = new Livreur(null, "sall", "sall@gmail.com", "33221165", "helux", null, 18.0798983, -15.99848, null, userInfo4);
 		livreurRepository.saveAll(Arrays.asList(liv1, liv2, liv3, liv4));
 	
 		// Enregistrer les commandes avec les produits associés
-		Commande com1 = new Commande(StatutCommande.ANNULEE, cl1);
+		Commande com1 = new Commande(StatutCommande.TRAITEE, cl1);
 		Commande com2 = new Commande(StatutCommande.ANNULEE, cl5);
 		Commande com3 = new Commande(StatutCommande.EN_ATTENTE, cl2);
 		Commande com4 = new Commande(StatutCommande.TRAITEE, cl3);
@@ -110,7 +110,7 @@ public class PfeUgbApplication implements CommandLineRunner{
 	
 		
 		// Enregistrer les livraisons et les associer aux commandes
-		Livraison livraison1 = new Livraison(StatutLivraison.ANNULEE, liv1);
+		Livraison livraison1 = new Livraison(StatutLivraison.EN_COURS, liv1);
 		Livraison livraison2 = new Livraison(StatutLivraison.ANNULEE, liv2);
 		Livraison livraison3 = new Livraison(StatutLivraison.EN_ATTENTE, liv3);
 		Livraison livraison4 = new Livraison(StatutLivraison.EN_COURS, liv4);

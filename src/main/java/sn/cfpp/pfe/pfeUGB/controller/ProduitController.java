@@ -55,11 +55,13 @@ public class ProduitController {
         return produitService.getProduitsSansLivraison();
     }
 
+   
     @GetMapping("/sans-livraison-by-user")
     public List<Produit> getProduitsSansLivraisonParUtilisateur(@RequestParam Long userId) {
         return produitService.getProduitsSansLivraisonByUser(userId);
     }
 
+     // Ce endpoint n'est pas encore utiliser
     @GetMapping("/avec-livraison")
     public ResponseEntity<List<Produit>> getProduitsAvecLivraisonByUser(@RequestParam Long userId) {
         try {

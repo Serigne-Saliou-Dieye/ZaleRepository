@@ -94,58 +94,56 @@ public class ProduitService {
 
     // Méthode pour récupérer les produits sans livraison d'un utilisateur spécifique
     public List<Produit> getProduitsSansLivraisonByUser(Long userId) {
-        // Récupérer le client associé à l'utilisateur
-        Optional<Client> clientOpt = clientRepository.findByUserClientId(userId);
-        if (clientOpt.isEmpty()) {
-            throw new EntityNotFoundException("Aucun client associé à cet utilisateur.");
-        }
-        Client client = clientOpt.get();
-    
-        // Récupérer les commandes associées à ce client
-        List<Commande> commandesClient = commandeRepository.findByClientIdCl(client.getIdCl());
-    
-        // Récupérer les produits sans livraison
-        List<Produit> produitsSansLivraison = getProduitsSansLivraison();
-    
-        // Récupérer les produits associés aux commandes du client
-        Set<Long> idsProduitsCommandesClient = commandesClient.stream()
-            .flatMap(commande -> commande.getProduits().stream())
-            .map(Produit::getIdProd)
+        Client client = clientRepository.findByUserClientId(userId)
+            .orElseThrow(() -> new EntityNotFoundException("Aucun client associé à cet utilisateur."));
+        
+        Set<Long> idsProduitsCommandesClient = commandeRepository.findByClientIdCl(client.getIdCl()).stream()
+            .filter(cmd -> StatutCommande.EN_ATTENTE.equals(cmd.getStatutCmd())) // Filtre commandes en attente
+            .flatMap(cmd -> cmd.getProduits().stream().map(Produit::getIdProd))
             .collect(Collectors.toSet());
     
-        // Filtrer les produits sans livraison pour ne garder que ceux appartenant aux commandes du client
-        return produitsSansLivraison.stream()
+        return getProduitsSansLivraison().stream()
             .filter(produit -> idsProduitsCommandesClient.contains(produit.getIdProd()))
             .collect(Collectors.toList());
     }
     
+    
+
+    // public List<Produit> getProduitsAvecLivraisonByUser(Long userId) {
+    //     // Récupérer le client associé à l'utilisateur
+    //     Optional<Client> clientOpt = clientRepository.findByUserClientId(userId);
+    //     if (clientOpt.isEmpty()) {
+    //         throw new EntityNotFoundException("Aucun client associé à cet utilisateur.");
+    //     }
+    //     Client client = clientOpt.get();
+    
+    //     // Récupérer les commandes associées au client
+    //     List<Commande> commandesClient = commandeRepository.findByClientIdCl(client.getIdCl());
+        
+    //    // Filtrer les commandes avec un statut TRAITEE
+    //     List<Commande> commandesTraitees = commandesClient.stream()
+    //     .filter(commande -> commande.getStatutCmd() != null) // Vérifie que la commande a un statut
+    //     .filter(commande -> commande.getStatutCmd().equals(StatutCommande.EN_ATTENTE)) // Vérifie le statut
+    //     .collect(Collectors.toList());
+
+    
+    //     // Extraire les produits des commandes valides
+    //     Set<Produit> produitsAvecLivraisonValide = commandesTraitees.stream()
+    //         .flatMap(commande -> commande.getProduits().stream()) // Récupère les produits de chaque commande
+    //         .collect(Collectors.toSet());
+    
+    //     // Retourner les produits sous forme de liste
+    //     return new ArrayList<>(produitsAvecLivraisonValide);
+    // }
 
     public List<Produit> getProduitsAvecLivraisonByUser(Long userId) {
-        // Récupérer le client associé à l'utilisateur
-        Optional<Client> clientOpt = clientRepository.findByUserClientId(userId);
-        if (clientOpt.isEmpty()) {
-            throw new EntityNotFoundException("Aucun client associé à cet utilisateur.");
-        }
-        Client client = clientOpt.get();
-    
-        // Récupérer les commandes associées au client
-        List<Commande> commandesClient = commandeRepository.findByClientIdCl(client.getIdCl());
-        
-       // Filtrer les commandes avec un statut TRAITEE
-        List<Commande> commandesTraitees = commandesClient.stream()
-        .filter(commande -> commande.getStatutCmd() != null) // Vérifie que la commande a un statut
-        .filter(commande -> commande.getStatutCmd().equals(StatutCommande.TRAITEE)) // Vérifie le statut
-        .collect(Collectors.toList());
-
-    
-        // Extraire les produits des commandes valides
-        Set<Produit> produitsAvecLivraisonValide = commandesTraitees.stream()
-            .flatMap(commande -> commande.getProduits().stream()) // Récupère les produits de chaque commande
-            .collect(Collectors.toSet());
-    
-        // Retourner les produits sous forme de liste
-        return new ArrayList<>(produitsAvecLivraisonValide);
+        return clientRepository.findByUserClientId(userId)
+            .map(client -> commandeRepository.findByClientIdCl(client.getIdCl()).stream()
+                .filter(cmd -> StatutCommande.TRAITEE.equals(cmd.getStatutCmd())) // Filtre les commandes en attente
+                .flatMap(cmd -> cmd.getProduits().stream()) // Récupère les produits
+                .distinct() // Évite les doublons
+                .collect(Collectors.toList()))
+            .orElseThrow(() -> new EntityNotFoundException("Aucun client associé à cet utilisateur."));
     }
-
-
+    
 }

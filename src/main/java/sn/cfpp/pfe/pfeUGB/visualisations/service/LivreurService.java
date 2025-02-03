@@ -117,4 +117,23 @@ public class LivreurService {
             .collect(Collectors.toList()); // Retourner la liste des livreurs
     }
 
+    public List<Livreur> getLivreursAvecStatusLivraisonEncours() {
+        // Récupérer les commandes associées à tous les clients//+
+        List<Commande> commandes = commandeRepository.findAll();//+
+
+        // Récupérer les livreurs associés aux livraisons des commandes avec le statut "EN_COURS"
+        return commandes.stream()
+            .flatMap(commande -> {
+                // Vérifier si la livraison existe
+                Livraison livraison = commande.getLivraison(); // Assurez-vous que getLivraison() est une méthode de Commande
+                if (livraison != null && livraison.getStatutLivraison() == StatutLivraison.EN_COURS) {
+                    return Stream.of(livraison.getLivreur()); // Récupérer le livreur associé à la livraison
+                }
+                return Stream.empty(); // Retourner un stream vide si la livraison n'est pas en cours
+            })
+            .filter(livreur -> livreur != null) // Filtrer les livreurs null
+            .distinct() // Éliminer les doublons
+            .collect(Collectors.toList()); // Retourner la liste des livreurs
+    }
+
 }
