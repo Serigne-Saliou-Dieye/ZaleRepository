@@ -88,7 +88,7 @@ public class LivraisonController {
 
     // Read (Lister toutes les commandes)
     @GetMapping
-    public Iterable<Livraison> getAllLivraison(){
+    public Iterable<Livraison> getAllLivraison(){       
         return livraisonRepository.findAll(); 
     }
 

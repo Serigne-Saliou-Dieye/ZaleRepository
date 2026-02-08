@@ -17,6 +17,7 @@ import sn.cfpp.pfe.pfeUGB.statut.StatutLivraison;
 import sn.cfpp.pfe.pfeUGB.visualisations.service.ProduitService;
 import sn.cfpp.pfe.pfeUGB.websockets.NotificationService;
 
+// @CrossOrigin(origins = "*") // Autoriser toutes les origines
 @RestController
 @RequestMapping("/api/produits")
 public class ProduitController {
@@ -62,18 +63,19 @@ public class ProduitController {
     }
 
      // Ce endpoint n'est pas encore utiliser
-    @GetMapping("/avec-livraison")
+    @GetMapping("/avec-livraison")  
     public ResponseEntity<List<Produit>> getProduitsAvecLivraisonByUser(@RequestParam Long userId) {
-        try {
-            List<Produit> produits = produitService.getProduitsAvecLivraisonByUser(userId);
-            return ResponseEntity.ok(produits);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        List<Produit> produits = produitService.getProduitsAvecLivraisonByUser(userId);
+        return ResponseEntity.ok(produits);
+        // try {
+        //     return ResponseEntity.ok(produits);
+        // } catch (EntityNotFoundException e) {
+        //     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        // } catch (Exception e) {
+        //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        // } 
     }
-
+   
 
     //obtenir la liste des clients 
     @GetMapping
